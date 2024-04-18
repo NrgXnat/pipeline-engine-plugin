@@ -1,0 +1,233 @@
+/*
+ * xnat-template-plugin: build.gradle
+ * XNAT https://www.xnat.org
+ * Copyright (c) 2005-2021, Washington University School of Medicine
+ * All Rights Reserved
+ *
+ * Released under the Simplified BSD.
+ */
+
+buildscript {
+    ext {
+        vXnat = "1.8.11-SNAPSHOT"
+    }
+}
+
+plugins {
+    id "eclipse"
+    id "idea"
+    id "jacoco"
+    id "java"
+    id "maven-publish"
+    id "com.dorongold.task-tree" version "1.5"
+    id "com.palantir.git-version" version "0.12.1"
+    id "io.franzbecker.gradle-lombok" version "4.0.0"
+    id "io.spring.dependency-management" version "1.0.11.RELEASE"
+    id "net.linguica.maven-settings" version "0.5"
+    id "org.nrg.xnat.build.xnat-data-builder" version "1.8.10"
+}
+
+group "org.nrg.xnatx.plugins"
+version "1.0.0-SNAPSHOT"
+description "XNAT Pipeline Engine UI Plugin"
+
+def pipelineVersion = "1.8.10"
+def pipelineDependencyVersion = "1.0"
+
+repositories {
+    mavenLocal()
+    maven { url "https://nrgxnat.jfrog.io/nrgxnat/libs-release" }
+    maven { url "https://nrgxnat.jfrog.io/nrgxnat/libs-snapshot" }
+    mavenCentral()
+}
+
+
+configurations {
+    all {
+        exclude group: "junit"
+        exclude group: "net.logstash.logback"
+        exclude group: "org.slf4j", module: "log4j-over-slf4j"
+        exclude group: "org.slf4j", module: "slf4j-log4j12"
+        exclude group: "org.slf4j", module: "slf4j-simple"
+    }
+    implementation.extendsFrom(implementAndInclude)
+}
+
+compileJava {
+    dependsOn xnatDataBuilder
+    options.fork = false
+}
+
+
+dependencyManagement.imports {
+    mavenBom "org.nrg:parent:${vXnat}"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "build/xnat-generated/src/main/java"
+        }
+        resources {
+            srcDir "build/xnat-generated/src/main/resources"
+        }
+    }
+}
+
+
+dependencies {
+    annotationProcessor "org.nrg:framework"
+    implementation enforcedPlatform("org.nrg:parent:${vXnat}")
+
+    implementation "org.nrg.xnat:web"
+    implementation "org.nrg.xnat:xnat-data-models"
+    implementation "org.nrg.xdat:core"
+    implementation "org.nrg:prefs"
+    implementation "org.nrg:framework"
+    implementation "io.springfox:springfox-swagger2"
+    implementation "io.springfox:springfox-swagger-ui"
+    implementation "org.nrg.xnat:plexiviewer"
+
+    implementation "org.slf4j:slf4j-api"
+    implementation "org.slf4j:slf4j-log4j12"
+    implementation "org.slf4j:jul-to-slf4j"
+    implementation "log4j:log4j"
+
+
+    implementAndInclude "org.nrg:pipelineBase:${pipelineDependencyVersion}"
+    implementAndInclude "org.nrg:pipelineBuild:${pipelineDependencyVersion}"
+    implementAndInclude "org.nrg:pipelineWorkflow:${pipelineDependencyVersion}"
+    implementAndInclude "org.nrg:pipelineXNAT:${pipelineDependencyVersion}"
+    implementAndInclude "org.nrg:pipelineCatalog:${pipelineDependencyVersion}"
+
+    implementAndInclude "org.nrg.xnat.pipeline:pipeline-client:${pipelineVersion}"
+    implementAndInclude "org.nrg.xnat.pipeline:xnat-pipeline:${pipelineVersion}"
+    implementAndInclude "org.nrg.xnat.pipeline:xnat-tools:${pipelineVersion}"
+    implementAndInclude "com.lowagie:itext"
+    implementAndInclude "org.apache.xmlbeans:xmlbeans"
+    implementAndInclude "org.apache.xmlbeans:xmlbeans-xpath"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+}
+
+// Pulls in the Jenkins BUILD_NUMBER environment variable if available.
+def buildDate = new Date()
+def buildNumber = System.getenv().BUILD_NUMBER?.toInteger() ?: "Manual"
+def isDirty, branchName, gitHash, gitHashFull, commitDistance, lastTag, isCleanTag
+
+try {
+    def gitDetails = versionDetails()
+    isDirty = gitVersion().endsWith ".dirty"
+    branchName = gitDetails.branchName ?: "Unknown"
+    gitHash = gitDetails.gitHash
+    gitHashFull = gitDetails.gitHashFull
+    commitDistance = gitDetails.commitDistance
+    lastTag = gitDetails.lastTag
+    isCleanTag = gitDetails.isCleanTag
+} catch (IllegalArgumentException e) {
+    logger.info "Got an error trying to read VCS metadata from git. It's possible this project is not under VCS control. Using placeholder values for manifest entries."
+    isDirty = true
+    branchName = "Unknown"
+    gitHash = "None"
+    gitHashFull = "None"
+    commitDistance = 0
+    lastTag = "None"
+    isCleanTag = false
+}
+
+ext.gitManifest = manifest {
+    attributes "Application-Name": project.description,
+            "Build-Date": buildDate,
+            "Build-Number": buildNumber,
+            "Implementation-Version": project.version,
+            "Implementation-Sha": gitHash,
+            "Implementation-Sha-Full": gitHashFull,
+            "Implementation-Commit": commitDistance,
+            "Implementation-LastTag": lastTag,
+            "Implementation-Branch": branchName,
+            "Implementation-CleanTag": isCleanTag,
+            "Implementation-Dirty": isDirty
+}
+
+logger.info """
+Building artifacts with manifest attributes:
+
+ * Build-Date:              ${buildDate}
+ * Build-Number:            ${buildNumber}
+ * Implementation-Version:  ${version}
+ * Implementation-Sha-Full: ${gitHashFull}
+ * Implementation-Sha:      ${gitHash}
+ * Implementation-Commit:   ${commitDistance}
+ * Implementation-LastTag:  ${lastTag}
+ * Implementation-Branch:   ${branchName}
+ * Implementation-CleanTag: ${isCleanTag}
+ * Implementation-Dirty:    ${isDirty}
+"""
+
+
+lombok {
+    version = dependencyManagement.importedProperties["lombok.version"] as String
+    sha256 = dependencyManagement.importedProperties["lombok.checksum"] as String
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = false
+        csv.required = true
+        html.required = true
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    duplicatesStrategy = DuplicatesStrategy.WARN
+    classifier "sources"
+    manifest {
+        from gitManifest
+    }
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar) {
+    classifier "javadoc"
+    manifest {
+        from gitManifest
+    }
+    from javadoc.destinationDir
+}
+
+jar {
+    dependsOn test, sourcesJar, javadocJar
+    enabled = true
+    manifest {
+        from gitManifest
+    }
+}
+
+task xnatPluginJar(type: Jar) {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    dependsOn test, sourcesJar, javadocJar
+    zip64 true
+    archiveClassifier.set "xpl"
+    manifest {
+        from gitManifest
+    }
+
+    // files and folders with "-dev" or "--xx" in their name
+    // will not be in the compiled jar
+    exclude "**/resources/**/*-dev**"
+    exclude "**/resources/**/*--xx**"
+    from {
+        configurations.implementAndInclude.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+}
