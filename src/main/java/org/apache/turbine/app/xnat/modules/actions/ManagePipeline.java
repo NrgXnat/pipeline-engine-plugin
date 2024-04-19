@@ -424,7 +424,7 @@ public class ManagePipeline extends SecureAction {
             String paramFilePath = saveParameters(buildDir + File.separator + exptLabel, paramFileName, parameters);
         pipelineLaunchParameters.setParameterFile(paramFilePath);
             boolean success=false;
-        DefaultXnatPipelineLauncher xnatPipelineLauncher = new DefaultXnatPipelineLauncher(pipelineLaunchParameters);
+        DefaultXnatPipelineLauncher xnatPipelineLauncher = DefaultXnatPipelineLauncher.GetLauncher(pipelineLaunchParameters);
 
         if (launch_now) {
                 success=xnatPipelineLauncher.launch(null);

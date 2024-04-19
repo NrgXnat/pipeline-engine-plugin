@@ -1,3 +1,6 @@
+#if($data.getSession().getAttribute("userHelper").canDelete("xnat:subjectData/project",$om.id))
+<!-- BEGIN META-INF/resources/templates/screens/xnat_projectData/tabs/Pipelines.vm -->
+<!-- title: Pipelines -->
 <!-- Source file -->
 <script type="text/javascript" src="$content.getURI("scripts/yui/build/logger/logger-min.js")"></script>
 <script type="text/javascript" src="$content.getURI("scripts/yui/build/animation/animation.js")"></script>
@@ -65,7 +68,7 @@
     });
 
     function summaryTabChange(obj){
-        if (obj.newValue.get("href") == "#tab4") {
+        if (obj.newValue.get("href") == "#Pipelines") {
             if (window.pipelineManager == undefined)window.pipelineManager = new PipelineManager("pipeline_mgmt_div", "$project.getId()");
             window.pipelineManager.getPipelines();
         }
@@ -114,7 +117,7 @@
     function addMonitor(){
         initComponents();
 
-        if (window.summaryTabView.get("activeTab").get("href") == "#tab4") {
+        if (window.summaryTabView.get("activeTab").get("href") == "#Pipelines") {
             if (window.pipelineManager == undefined) {
                 window.pipelineManager = new PipelineManager("pipeline_mgmt_div", "$project.getId()");
                 window.pipelineManager.getPipelines();
@@ -126,10 +129,15 @@
     }
     ;
 
-    YAHOO.util.Event.onDOMReady(addMonitor);
+    //YAHOO.util.Event.onDOMReady(addMonitor);
 
 
 </script>
-
-
+#else
+<!-- if not a project owner, hide the tab added to the project page -->
+<script>
+ console.log("Not found and removing");
+        jq(document).find('a[href=#Pipelines]').parents('li').hide();
+</script>
+#end
 

@@ -276,8 +276,7 @@ public class PipelineLaunchHandler {
 	        String paramFileName = expt.getLabel() + "_" + arcPipeline.getName() + "_params_" + dateSuffix + ".xml";
 	        String paramFilePath = saveParameters(buildDir + File.separator + expt.getLabel(),paramFileName,parameters);
 		   pipelineLaunchParameters.setParameterFile(paramFilePath);
-		   DefaultXnatPipelineLauncher xnatPipelineLauncher = new DefaultXnatPipelineLauncher(pipelineLaunchParameters);
-		   return xnatPipelineLauncher.launch();
+		   return DefaultXnatPipelineLauncher.GetLauncher(pipelineLaunchParameters).launch();
 	    }
 
 		private boolean launch(ArcPipelinedataI arcPipeline, final UserI user) throws Exception {
@@ -372,8 +371,7 @@ public class PipelineLaunchHandler {
 			String paramFileName = expt.getLabel() + "_" + arcPipeline.getName() + "_params_" + dateSuffix + ".xml";
 			String paramFilePath = saveParameters(buildDir+File.separator + expt.getLabel(),paramFileName,parameters);
 			pipelineLaunchParameters.setParameterFile(paramFilePath);
-			DefaultXnatPipelineLauncher xnatPipelineLauncher = new DefaultXnatPipelineLauncher(pipelineLaunchParameters);
-			return xnatPipelineLauncher.launch();
+			return DefaultXnatPipelineLauncher.GetLauncher(pipelineLaunchParameters).launch();
 		}
 
 		protected String saveParameters(String rootpath, String fileName, Parameters parameters) throws Exception{

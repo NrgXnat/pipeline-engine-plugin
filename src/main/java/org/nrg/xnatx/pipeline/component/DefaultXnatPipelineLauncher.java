@@ -54,7 +54,7 @@ public class DefaultXnatPipelineLauncher implements PipelineLauncherService {
     public static final String NOT_A_PASSWORD = "********";
 
 
-    public DefaultXnatPipelineLauncher(final PipelineLaunchParameters pipelineLaunchParameters) {
+    public void setPipelineLaunchParameters(final PipelineLaunchParameters pipelineLaunchParameters) {
         this.pipelineLaunchParameters = pipelineLaunchParameters;
     }
 
@@ -399,7 +399,7 @@ public class DefaultXnatPipelineLauncher implements PipelineLauncherService {
 
 
     public static DefaultXnatPipelineLauncher GetLauncherForExperiment(RunData data, Context context, XnatExperimentdata imageSession) throws Exception {
-        return new DefaultXnatPipelineLauncher(buildPipelineLaunchParameters(data, context, imageSession));
+        return GetLauncher(buildPipelineLaunchParameters(data, context, imageSession));
     }
 
     public static DefaultXnatPipelineLauncher GetLauncher(RunData data, Context context, XnatImagesessiondata imageSession) throws Exception {
@@ -409,7 +409,13 @@ public class DefaultXnatPipelineLauncher implements PipelineLauncherService {
             path = path.substring(0, path.length() - 1);
         }
         pipelineLaunchParameters.setParameter("archivedir", path);
-        return new DefaultXnatPipelineLauncher(pipelineLaunchParameters);
+        return GetLauncher(pipelineLaunchParameters);
+    }
+
+    public static DefaultXnatPipelineLauncher GetLauncher(final PipelineLaunchParameters pipelineLaunchParameters) {
+        DefaultXnatPipelineLauncher pipelineLauncher = new DefaultXnatPipelineLauncher();
+        pipelineLauncher.setPipelineLaunchParameters(pipelineLaunchParameters);
+        return  pipelineLauncher;
     }
 
     private static PipelineLaunchParameters buildPipelineLaunchParameters(RunData data, Context context, XnatExperimentdata imageSession) {

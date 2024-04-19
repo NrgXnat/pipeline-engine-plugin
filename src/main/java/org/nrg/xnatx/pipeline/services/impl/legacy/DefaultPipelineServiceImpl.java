@@ -65,8 +65,7 @@ public class DefaultPipelineServiceImpl implements PipelineService {
         pipelineLaunchParameters.setParameter("mailhost", XDAT.getNotificationsPreferences().getSmtpServer().getHostname());
         pipelineLaunchParameters.setParameter("sessionType", experiment.getXSIType());
         pipelineLaunchParameters.setParameter("xnat_project", experiment.getProject());
-        final DefaultXnatPipelineLauncher launcher = new DefaultXnatPipelineLauncher(pipelineLaunchParameters);
-        return launcher.launch(null);
+        return DefaultXnatPipelineLauncher.GetLauncher(pipelineLaunchParameters).launch(null);
     }
 
     private static final String XNAT_TOOLS_AUTO_RUN_XML = "xnat_tools/AutoRun.xml";

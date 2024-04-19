@@ -1,0 +1,77 @@
+#################################################
+####  Root Site Admin Spawner Config Object  ####
+#################################################
+
+pipelineSettingsTab:
+  kind: tab
+  name: pipelineSettingsTab
+  label: Pipeline Settings
+  group: pipelineTabGroup
+  contents:
+    ${pipelineSettings}
+    ${autoRunSettings}
+
+siteSettings:
+  kind: tabs
+  name:  pipelineAdminPage
+  label: Pipeline Administration
+  meta:
+    tabGroups:
+      pipelineTabGroup: Pipeline Settings
+  contains: tabs
+  tabs:
+     ${pipelineSettingsTab}
+
+####
+#### Pipeline Site Settings Panels
+####
+
+processingUrl:
+  kind: panel.input.text
+  name: processingUrl
+  label: Processing Url
+  validation: allow-empty url onblur
+  description: >
+    The address to be used for processing. If this is left blank, pipelines will use the site
+    URL. If your pipelines need to connect to an internal URL, different from your external
+    site URL, provide one here.
+
+pipelineSettings:
+  kind: panel.form
+  label: Pipeline Settings
+  group: pipelineTabGroup
+  method: POST
+  contentType: json
+  url: /xapi/siteConfig
+  contents:
+    ${processingUrl}
+
+autoRunSettings:
+  kind: panel.form
+  label: AutoRun
+  group: pipelineTabGroup
+  method: POST
+  contentType: json
+  url: /xapi/pipelines
+  contents:
+    autoRunEnabled:
+      kind: panel.input.switchbox
+      name: autoRunEnabled
+      label: Launch AutoRun
+      onText: AutoRun Enabled
+      offText: AutoRun Disabled
+      description: >
+        Determines whether XNAT should launch the AutoRun pipeline as new sessions are archived. Requires the pipeline engine
+        to be installed at the location stored in the <b>pipelinePath</b> site configuration option.
+
+    allowAutoRunProjectOverride:
+      kind: panel.input.switchbox
+      name: allowAutoRunProjectOverride
+      label: Allow Project Override
+      onText: Project Override Enabled
+      offText: Project Override Disabled
+      description: >
+        Determines whether Project Owners can enable or disable the AutoRun pipeline for their projects, regardless of the
+        site-wide setting.
+
+# end
