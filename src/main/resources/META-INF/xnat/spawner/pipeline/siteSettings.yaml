@@ -5,7 +5,7 @@
 pipelineSettingsTab:
   kind: tab
   name: pipelineSettingsTab
-  label: Pipeline Settings
+  label: Settings
   group: pipelineTabGroup
   contents:
     ${pipelineSettings}
@@ -17,7 +17,7 @@ siteSettings:
   label: Pipeline Administration
   meta:
     tabGroups:
-      pipelineTabGroup: Pipeline Settings
+      pipelineTabGroup: Pipeline
   contains: tabs
   tabs:
      ${pipelineSettingsTab}

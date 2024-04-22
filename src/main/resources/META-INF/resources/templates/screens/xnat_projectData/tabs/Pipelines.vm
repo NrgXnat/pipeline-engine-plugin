@@ -1,14 +1,11 @@
 #if($data.getSession().getAttribute("userHelper").canDelete("xnat:subjectData/project",$om.id))
 <!-- BEGIN META-INF/resources/templates/screens/xnat_projectData/tabs/Pipelines.vm -->
 <!-- title: Pipelines -->
-<!-- Source file -->
 <script type="text/javascript" src="$content.getURI("scripts/yui/build/logger/logger-min.js")"></script>
 <script type="text/javascript" src="$content.getURI("scripts/yui/build/animation/animation.js")"></script>
 <script type="text/javascript" src="$content.getURI("scripts/project/pipelineMgmt.js")"></script>
-
+<div id="project-pipeline-panel" class="panel" style="padding: 1em; margin-bottom: 0">
 <div id="waitPanel"></div>
-
-
 
 <table class="mgmt_container">
     <tr>
@@ -28,24 +25,13 @@
 
         </td>
     </tr>
-    <tr>
-        <td>
-            <div id="myLogger"></div>
-        </td>
-    </tr>
-
     <div id="content"></div>
-
 </table>
 
-
-
-
+</div>
 
 <script language="javascript">
-
-
-
+ console.log("xnat_projectData/tabs/Pipelines.vm");
 
     var handleOK = function(){
         this.hide();
@@ -129,15 +115,16 @@
     }
     ;
 
-    //YAHOO.util.Event.onDOMReady(addMonitor);
-
-
+    YAHOO.util.Event.onDOMReady(addMonitor);
 </script>
+
 #else
 <!-- if not a project owner, hide the tab added to the project page -->
 <script>
  console.log("Not found and removing");
         jq(document).find('a[href=#Pipelines]').parents('li').hide();
 </script>
+
 #end
+<!-- END META-INF/resources/templates/screens/xnat_projectData/tabs/Pipelines.vm -->
 

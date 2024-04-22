@@ -24,30 +24,6 @@ var addLinkFormatter = function(elCell, oRecord, oColumn, oData) {
 var detailsLinkFormatter = function(elCell, oRecord, oColumn, oData) {  
  	elCell.innerHTML="<a href=\"#\" onclick=\"window.open('" + serverRoot + "/app/template/PipelineScreen_details.vm?search_element=pipe:pipelineDetails&search_field=pipe:pipelineDetails.path&search_value=" + oRecord.getData("Path") +"\','_blank','width=850,height=450,scrollbars=yes') \">Details</a>"  ; 
  }; 
-     
-//var myLogReader = new YAHOO.widget.LogReader("myLogger");
- 
-
-
-
-
-/*
-var editbuttonFormatter = function(elCell, oRecord, oColumn, oData) {  
- 	elCell.innerHTML="<a href=\"#\" onclick=\"window.open('" + serverRoot + "/app/template/PipelineScreen_add_project_pipeline.vm?edit=true&project="+window.pipelineManager.pID + "&pipeline_path=" + oRecord.getData("Path") +"&datatype="+oRecord.getData("Datatype")+"\','_blank','width=950,height=850,scrollbars=yes') \">Edit</a>"  ; 
- }; 
-
-
-var addLinkFormatter = function(elCell, oRecord, oColumn, oData) {  
- 	elCell.innerHTML="<a href=\"#\" onclick=\"window.open('" + serverRoot + "/app/template/PipelineScreen_add_project_pipeline.vm?project="+window.pipelineManager.pID + "&pipeline_path=" + oRecord.getData("Path") +"&datatype="+oRecord.getData("Datatype")+"\','_blank','width=950,height=850,scrollbars=yes') \">Add</a>"  ; 
- }; 
-
-
-var detailsLinkFormatter = function(elCell, oRecord, oColumn, oData) {  
- 	elCell.innerHTML="<a href=\"#\" onclick=\"window.open('" + serverRoot + "/app/template/PipelineScreen_details.vm?search_element=pipe:pipelineDetails&search_field=pipe:pipelineDetails.path&search_value=" + oRecord.getData("Path") +"\','_blank','width=850,height=450,scrollbars=yes') \">Details</a>"  ; 
- }; 
-*/     
-//var myLogReader = new YAHOO.widget.LogReader("myLogger");
- 
 
 function prependLoader(div_id,msg){
 	if(div_id.id==undefined){
