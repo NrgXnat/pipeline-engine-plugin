@@ -44,10 +44,6 @@ public class PipelineFileUtils {
             throw new Exception("Invalid XML file supplied " + pathToPipelineXmlFile + " ==> Expecting a pipeline document");
         }
         PipelineDocument pipelineDoc = (PipelineDocument)xo;
-        //String error = XMLBeansUtils.validateAndGetErrors(pipelineDoc);
-        //if (error != null) {
-          //  throw new XmlException("Invalid XML " + pathToPipelineXmlFile + "\n" + errors);
-        //}
         return pipelineDoc;
 }
 
@@ -67,7 +63,6 @@ public class PipelineFileUtils {
                 rtn = rtn.substring(0, rtn.length()-2);
             }
         }
-        System.out.println("Max Matching is " + rtn);
         int slash = rtn.lastIndexOf(File.separator);
         if (slash != -1) {
             rtn = rtn.substring(slash+1,rtn.length());
@@ -75,7 +70,6 @@ public class PipelineFileUtils {
 
         if (rtn.endsWith(".")) rtn = rtn.substring(0,rtn.length()-1);
 
-        System.out.println("Returnning formatted " + rtn);
         return rtn;
     }
 

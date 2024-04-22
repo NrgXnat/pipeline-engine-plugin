@@ -358,13 +358,18 @@ public class DefaultXnatPipelineLauncher implements PipelineLauncherService {
 
     private void setBuildDir() {
         // TODO Set this to be the buildDir for the project
-        String buildPath = ArcSpecManager.GetFreshInstance().getGlobalBuildPath() ;
-        if (buildPath.endsWith(File.separator)) {
-            buildPath = buildPath.substring(0, buildPath.length() - 1);
+        String buildDir = pipelineLaunchParameters.getBuildDir();
+        if (buildDir == null) {
+            if (pipelineLaunchParameters.isNeedsBuildDir()) {
+                String buildPath = ArcSpecManager.GetFreshInstance().getGlobalBuildPath() ;
+                if (buildPath.endsWith(File.separator)) {
+                    buildPath = buildPath.substring(0, buildPath.length() - 1);
+                }
+                buildDir = buildPath + File.separator + "Pipeline";
+            }
         }
-        if (pipelineLaunchParameters.isNeedsBuildDir()) {
-            pipelineLaunchParameters.getParameters().put("builddir", Collections.singletonList(buildPath + File.separator + "Pipeline"));
-        }
+        if (buildDir != null)
+            pipelineLaunchParameters.getParameters().put("builddir", Collections.singletonList(buildDir));
     }
 
 

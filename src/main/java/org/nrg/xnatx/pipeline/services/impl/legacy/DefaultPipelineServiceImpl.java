@@ -43,7 +43,7 @@ public class DefaultPipelineServiceImpl implements PipelineService {
             throw new RuntimeException("Couldn't find the project " + experiment.getProject() + " as specified on experiment with ID " + experiment.getId());
         }
 
-        PipelineLaunchParameters pipelineLaunchParameters = PipelineLaunchParameters.builder().user(XDAT.getUserDetails()).build();
+        PipelineLaunchParameters pipelineLaunchParameters = PipelineLaunchParameters.builder().user(user).build();
 
         pipelineLaunchParameters.setAdmin_email(_siteConfigPreferences.getAdminEmail());
         pipelineLaunchParameters.setAlwaysEmailAdmin(ArcSpecManager.GetInstance().getEmailspecifications_pipeline());

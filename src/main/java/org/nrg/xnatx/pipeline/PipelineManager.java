@@ -322,7 +322,6 @@ public class PipelineManager {
   
    
    public static LinkedHashMap getResolvedParametersForDescendantPipeline(String stepId, String projectId, ItemI item) {
-       //System.out.println("Came here " + stepId + "  " +  projectId);
        LinkedHashMap parametersHash = new LinkedHashMap();
        try {
            String descendantXsiType = item.getXSIType();
@@ -339,13 +338,11 @@ public class PipelineManager {
                    String csvValues = aParameter.getCsvvalues().trim();
                    ArrayList<String> values = new ArrayList<String>(Arrays.asList(csvValues.split(",")));
                    parametersHash.put(aParameter,values);
-                   //System.out.println("Am inserting " + aParameter + " " + values);
                }else if (aParameter.getSchemalink() != null){
                     ArrayList values = resolveXPath(aParameter.getSchemalink(), item, docInfo);
                     if (values != null) parametersHash.put(aParameter,values);
                    //Saxon seems to have problem evaluating recursively. 
                    // SXXP0003 Premature end of file
-                   // System.out.println("Am inserting " + aParameter + " " + values);
                }else {
                    ArrayList<String> values = new ArrayList(); values.add("");
                    parametersHash.put(aParameter,values);
@@ -354,7 +351,6 @@ public class PipelineManager {
        }catch(Exception e) {
            logger.debug(e);
        }
-       //System.out.println("Returning size is " + parametersHash.size());
        return parametersHash;
    }
    
@@ -648,7 +644,6 @@ public class PipelineManager {
    
     
     public static LinkedHashMap getResolvedParametersForPipeline(String stepId, String projectId, ItemI item) throws Exception {
-        //System.out.println("Came here " + stepId + "  " +  projectId);
         LinkedHashMap parametersHash = new LinkedHashMap();
         try {
             List parameters = getParametersForPipeline(projectId,stepId);
@@ -664,13 +659,11 @@ public class PipelineManager {
                     String csvValues = aParameter.getCsvvalues().trim();
                     ArrayList<String> values = new ArrayList<String>(Arrays.asList(csvValues.split(",")));
                     parametersHash.put(aParameter,values);
-                    //System.out.println("Am inserting " + aParameter + " " + values);
                 }else if (aParameter.getSchemalink() != null){
                      ArrayList values = resolveXPath(aParameter.getSchemalink(), item, docInfo);
                      if (values != null) parametersHash.put(aParameter,values);
                     //Saxon seems to have problem evaluating recursively. 
                     // SXXP0003 Premature end of file
-                    // System.out.println("Am inserting " + aParameter + " " + values);
                 }else {
                     ArrayList<String> values = new ArrayList(); values.add("");
                     parametersHash.put(aParameter,values);

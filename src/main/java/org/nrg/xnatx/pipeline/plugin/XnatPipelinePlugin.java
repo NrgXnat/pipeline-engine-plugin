@@ -8,9 +8,10 @@ import org.springframework.context.annotation.ComponentScan;
         name           = "XNAT Pipeline Engine Plugin",
         description    = "XNAT Pipeline Engine as a plugin",
         logConfigurationFile = "META-INF/resources/pipeline-logback.xml")
-@ComponentScan({"org.nrg.xnatx.pipeline.component", "org.nrg.xnatx.pipeline.xapi"})
+@ComponentScan({"org.nrg.xnatx.pipeline.component",
+        "org.nrg.xnatx.pipeline.services.impl.legacy",
+        "org.nrg.xnatx.pipeline.xapi"})
 @Slf4j
-
 public class XnatPipelinePlugin {
 
 }

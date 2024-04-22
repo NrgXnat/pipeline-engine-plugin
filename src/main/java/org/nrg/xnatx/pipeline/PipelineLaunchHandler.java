@@ -192,7 +192,6 @@ public class PipelineLaunchHandler {
 	        String buildDir = PipelineFileUtils.getBuildDir(expt.getProject(), true);
 	        buildDir += "restlaunch";
 		   pipelineLaunchParameters.setBuildDir(buildDir);
-		   pipelineLaunchParameters.setNeedsBuildDir(false);
 
 	        Parameters parameters = Parameters.Factory.newInstance();
 	        ParameterData param;

@@ -421,6 +421,7 @@ public class ManagePipeline extends SecureAction {
             String paramFileName = exptLabel + "_params_" + s + ".xml";
             String buildDir = PipelineFileUtils.getBuildDir(project, true);
         pipelineLaunchParameters.setBuildDir(buildDir);
+        pipelineLaunchParameters.setNeedsBuildDir(false);
             String paramFilePath = saveParameters(buildDir + File.separator + exptLabel, paramFileName, parameters);
         pipelineLaunchParameters.setParameterFile(paramFilePath);
             boolean success=false;
