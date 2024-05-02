@@ -15,8 +15,8 @@ public class PipelineWebInitializer implements WebApplicationInitializer {
 
     public void onStartup(ServletContext context) throws ServletException {
         context.addListener(AxisHTTPSessionListener.class);
-        addServlet(AdminServlet.class, 10, "/servlet/AdminServlet");
-        addServlet(AxisServlet.class, 11, "/servlet/AxisServlet", "*.jws", "/services/*");
+        addServlet(context, AdminServlet.class, 10, "/servlet/AdminServlet");
+        addServlet(context, AxisServlet.class, 11, "/servlet/AxisServlet", "*.jws", "/services/*");
     }
 
     private void addServlet(final ServletContext context, final Class<? extends Servlet> clazz, final int loadOnStartup, final String... mappings) {
