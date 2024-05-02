@@ -10,6 +10,7 @@
 buildscript {
     ext {
         vXnat = "1.8.11-SNAPSHOT"
+        vAxis = "1.4"
     }
 }
 
@@ -93,8 +94,24 @@ dependencies {
     implementation "org.slf4j:jul-to-slf4j"
     implementation "log4j:log4j"
     implementation "net.sourceforge.saxon:saxon"
-
-
+    implementAndInclude ("axis:axis:${vAxis}") {
+        transitive = false
+    }
+    implementAndInclude ("axis:axis-ant:${vAxis}") {
+        transitive = false
+    }
+    implementAndInclude ("axis:axis-schema:1.3") {
+        transitive = false
+    }
+    implementAndInclude ("org.apache.axis:axis:${vAxis}") {
+        transitive = false
+    }
+    implementAndInclude ("org.apache.axis:axis-jaxrpc:${vAxis}") {
+        transitive = false
+    }
+    implementAndInclude ("org.apache.axis:axis-saaj:${vAxis}") {
+        transitive = false
+    }
 
     implementAndInclude ("org.nrg:pipelineBase:${pipelineDependencyVersion}") {
         transitive = false

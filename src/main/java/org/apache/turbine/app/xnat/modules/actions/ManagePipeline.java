@@ -14,7 +14,7 @@ import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.xmlbeans.XmlOptions;
 import org.nrg.pipeline.PipelineLaunchParameters;
-import org.nrg.pipeline.utils.PipelineConstants;
+import org.nrg.xnatx.pipeline.utils.PipelineConstants;
 import org.nrg.xnatx.pipeline.PipelineRepositoryManager;
 import org.nrg.xnatx.pipeline.component.DefaultXnatPipelineLauncher;
 import org.nrg.xnatx.pipeline.utils.PipelineAdder;

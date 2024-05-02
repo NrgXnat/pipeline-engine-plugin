@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
 import org.nrg.pipeline.PipelineLaunchParameters;
-import org.nrg.pipeline.utils.PipelineConstants;
+import org.nrg.xnatx.pipeline.utils.PipelineConstants;
 import org.nrg.xnatx.pipeline.component.DefaultXnatPipelineLauncher;
 import org.nrg.xnatx.pipeline.utils.PipelineFileUtils;
 import org.nrg.pipeline.xmlbeans.ParameterData;

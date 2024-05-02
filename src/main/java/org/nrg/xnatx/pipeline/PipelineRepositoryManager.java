@@ -12,7 +12,7 @@ package org.nrg.xnatx.pipeline;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
-import org.nrg.pipeline.utils.PipelineConstants;
+import org.nrg.xnatx.pipeline.utils.PipelineConstants;
 import org.nrg.pipeline.xmlbeans.PipelineData;
 import org.nrg.pipeline.xmlbeans.PipelineData.Documentation;
 import org.nrg.pipeline.xmlbeans.PipelineData.Documentation.InputParameters;
