@@ -14,7 +14,7 @@ import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.xmlbeans.XmlOptions;
 import org.nrg.pipeline.PipelineLaunchParameters;
-import org.nrg.xnatx.pipeline.utils.PipelineConstants;
+import org.nrg.pipeline.utils.PipelineConstants;
 import org.nrg.xnatx.pipeline.PipelineRepositoryManager;
 import org.nrg.xnatx.pipeline.component.DefaultXnatPipelineLauncher;
 import org.nrg.xnatx.pipeline.utils.PipelineAdder;
@@ -26,7 +26,6 @@ import org.nrg.pipeline.xmlbeans.ParametersDocument;
 import org.nrg.pipeline.xmlbeans.ParametersDocument.Parameters;
 import org.nrg.xdat.XDAT;
 import org.nrg.xdat.model.ArcPipelinedataI;
-import org.nrg.xdat.om.*;
 import org.nrg.xdat.turbine.modules.actions.SecureAction;
 import org.nrg.xdat.turbine.modules.screens.EditScreenA;
 import org.nrg.xdat.turbine.utils.PopulateItem;
@@ -54,7 +53,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-
+import org.nrg.xdat.om.ArcProjectPipeline;
+import org.nrg.xdat.om.ArcProjectDescendantPipeline;
+import org.nrg.xdat.om.ArcProjectDescendant;
+import org.nrg.xdat.om.PipePipelinerepository;
+import org.nrg.xdat.om.PipePipelinedetails;
+import org.nrg.xdat.om.ArcProject;
+import org.nrg.xdat.om.XnatProjectdata;
 
 public class ManagePipeline extends SecureAction {
 

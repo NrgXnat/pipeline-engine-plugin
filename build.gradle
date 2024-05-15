@@ -10,6 +10,7 @@
 buildscript {
     ext {
         vXnat = "1.8.11-SNAPSHOT"
+        vParent = "1.9.1-SNAPSHOT"
         vAxis = "1.4"
     }
 }
@@ -61,7 +62,7 @@ compileJava {
 
 
 dependencyManagement.imports {
-    mavenBom "org.nrg:parent:${vXnat}"
+    mavenBom "org.nrg:parent:${vParent}"
 }
 
 sourceSets {
@@ -78,7 +79,7 @@ sourceSets {
 
 dependencies {
     annotationProcessor "org.nrg:framework"
-    implementation enforcedPlatform("org.nrg:parent:${vXnat}")
+    implementation enforcedPlatform("org.nrg:parent:${vParent}")
 
     implementation "org.nrg.xnat:web"
     implementation "org.nrg.xnat:xnat-data-models"

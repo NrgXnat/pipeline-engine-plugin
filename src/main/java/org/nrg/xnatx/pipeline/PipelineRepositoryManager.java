@@ -12,15 +12,13 @@ package org.nrg.xnatx.pipeline;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
-import org.nrg.xnatx.pipeline.utils.PipelineConstants;
+import org.nrg.pipeline.utils.PipelineConstants;
 import org.nrg.pipeline.xmlbeans.PipelineData;
 import org.nrg.pipeline.xmlbeans.PipelineData.Documentation;
 import org.nrg.pipeline.xmlbeans.PipelineData.Documentation.InputParameters;
 import org.nrg.pipeline.xmlbeans.PipelineData.Documentation.InputParameters.Parameter;
 import org.nrg.pipeline.xmlbeans.PipelineData.XnatInfo.GeneratesElements;
 import org.nrg.pipeline.xmlbeans.PipelineDocument;
-import org.nrg.xdat.model.*;
-import org.nrg.xdat.om.*;
 import org.nrg.xft.event.EventMetaI;
 import org.nrg.xft.event.EventUtils;
 import org.nrg.xft.event.EventUtils.CATEGORY;
@@ -36,6 +34,24 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.nrg.xdat.om.PipePipelinerepository;
+import org.nrg.xdat.om.PipePipelinedetails;
+import org.nrg.xdat.om.PipePipelinedetailsElement;
+import org.nrg.xdat.om.PipePipelinedetailsParameter;
+import org.nrg.xdat.om.XnatProjectdata;
+import org.nrg.xdat.model.ArcProjectI;
+import org.nrg.xdat.model.ArcProjectPipelineI;
+import org.nrg.xdat.model.ArcProjectDescendantI;
+import org.nrg.xdat.model.ArcProjectDescendantPipelineI;
+
+import org.nrg.xdat.om.ArcProject;
+import org.nrg.xdat.om.ArcProjectDescendant;
+import org.nrg.xdat.om.ArcProjectDescendantPipeline;
+import org.nrg.xdat.om.ArcArchivespecification;
+import org.nrg.xdat.om.ArcProjectPipeline;
+import org.nrg.xdat.om.ArcPipelinedata;
+
+
 import java.util.List;
 
 public class PipelineRepositoryManager {
