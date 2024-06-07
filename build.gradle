@@ -10,8 +10,8 @@
 buildscript {
     ext {
         vXnat = "1.8.11-SNAPSHOT"
-        vParent = "1.9.1-SNAPSHOT"
         vAxis = "1.4"
+        vXmlBeans = "2.6.0"
     }
 }
 
@@ -62,7 +62,7 @@ compileJava {
 
 
 dependencyManagement.imports {
-    mavenBom "org.nrg:parent:${vParent}"
+    mavenBom "org.nrg:parent:${vXnat}"
 }
 
 sourceSets {
@@ -79,7 +79,7 @@ sourceSets {
 
 dependencies {
     annotationProcessor "org.nrg:framework"
-    implementation enforcedPlatform("org.nrg:parent:${vParent}")
+    implementation enforcedPlatform("org.nrg:parent:${vXnat}")
 
     implementation "org.nrg.xnat:web"
     implementation "org.nrg.xnat:xnat-data-models"
@@ -142,10 +142,10 @@ dependencies {
     implementAndInclude ("com.lowagie:itext") {
         transitive = false
     }
-    implementAndInclude ("org.apache.xmlbeans:xmlbeans"){
+    implementAndInclude ("org.apache.xmlbeans:xmlbeans:${vXmlBeans}"){
         transitive = false
     }
-    implementAndInclude ("org.apache.xmlbeans:xmlbeans-xpath"){
+    implementAndInclude ("org.apache.xmlbeans:xmlbeans-xpath:${vXmlBeans}"){
         transitive = false
     }
     testImplementation "org.junit.jupiter:junit-jupiter-api"

@@ -15,9 +15,7 @@ import org.apache.axis.MessageContext;
 import org.apache.log4j.Logger;
 import org.nrg.xdat.security.Authenticator;
 import org.nrg.xdat.security.user.exceptions.FailedLoginException;
-import org.nrg.xdat.turbine.utils.AccessLogger;
 import org.nrg.xdat.turbine.utils.AxisAccessLogger;
-import org.nrg.xft.XFT;
 import org.nrg.xft.event.EventUtils;
 import org.nrg.xft.exception.*;
 import org.nrg.xft.schema.Wrappers.XMLWrapper.SAXReader;
@@ -82,7 +80,7 @@ public class StoreXML {
                     
                     sb.append("Item Successfully Stored.");
                     logger.info("Item Successfully Stored.");	
-                    AccessLogger.LogServiceAccess(_username, messageContext,"StoreXML",item.getProperName() + " Successfully Stored");
+                    AxisAccessLogger.LogServiceAccess(_username, messageContext,"StoreXML",item.getProperName() + " Successfully Stored");
                 }else
                 {
                 	throw new ValidationException(vr);
