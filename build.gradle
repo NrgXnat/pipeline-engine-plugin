@@ -56,7 +56,6 @@ configurations {
 }
 
 compileJava {
-    dependsOn xnatDataBuilder
     options.fork = false
 }
 
