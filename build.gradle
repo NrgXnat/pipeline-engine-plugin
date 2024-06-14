@@ -12,6 +12,7 @@ buildscript {
         vXnat = "1.8.11-SNAPSHOT"
         vAxis = "1.4"
         vXmlBeans = "2.6.0"
+        vPlexiViewer = "1.8.10"
     }
 }
 
@@ -26,7 +27,6 @@ plugins {
     id "io.franzbecker.gradle-lombok" version "4.0.0"
     id "io.spring.dependency-management" version "1.0.11.RELEASE"
     id "net.linguica.maven-settings" version "0.5"
-    id "org.nrg.xnat.build.xnat-data-builder" version "1.8.10"
 }
 
 group "org.nrg.xnatx.plugins"
@@ -87,7 +87,9 @@ dependencies {
     implementation "org.nrg:framework"
     implementation "io.springfox:springfox-swagger2"
     implementation "io.springfox:springfox-swagger-ui"
-    implementation "org.nrg.xnat:plexiviewer"
+    implementAndInclude ("org.nrg.xnat:plexiviewer:${vPlexiViewer}") {
+        transitive = false
+    }
 
     implementation "org.slf4j:slf4j-api"
     implementation "org.slf4j:slf4j-log4j12"
