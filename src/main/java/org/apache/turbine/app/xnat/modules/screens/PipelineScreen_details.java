@@ -18,6 +18,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.nrg.xnatx.pipeline.PipelineRepositoryManager;
+import org.nrg.xnatx.pipeline.helpers.PipelineRepositoryHelper;
 import org.nrg.xnatx.pipeline.utils.PipelineFileUtils;
 import org.nrg.pipeline.xmlbeans.PipelineData.Documentation;
 import org.nrg.pipeline.xmlbeans.PipelineData.Documentation.Authors.Author;
@@ -49,7 +50,7 @@ public class PipelineScreen_details extends XDATScreen_pdf {
 		protected ByteArrayOutputStream buildPdf (RunData data) throws 	Exception {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			try {
-				PipePipelinerepository pipelineRepository = PipelineRepositoryManager.GetInstance();
+				PipelineRepositoryHelper pipelineRepositoryHelper = PipelineRepositoryManager.GetInstance();
 				PipePipelinedetails pipeline = (PipePipelinedetails)BaseElement.GetGeneratedItem(item);
 				String pipelineDescriptorPath = pipeline.getPath();
 				PipelineDocument pipelineDoc = getDocument(pipelineDescriptorPath);
@@ -79,12 +80,12 @@ public class PipelineScreen_details extends XDATScreen_pdf {
 
 				    document.add(Chunk.NEWLINE);
 
-				   Paragraph p  = new Paragraph ("Runs on: " + pipelineRepository.getDisplayName(pipeline.getAppliesto()), textFont);
+				   Paragraph p  = new Paragraph ("Runs on: " + pipelineRepositoryHelper.getDisplayName(pipeline.getAppliesto()), textFont);
 				   p.setAlignment (Element.ALIGN_LEFT);
 				   document.add(p);
 
 				   
-				   p = new Paragraph ("Generates: " + pipelineRepository.getElementsGeneratedBy(pipeline), textFont);
+				   p = new Paragraph ("Generates: " + pipelineRepositoryHelper.getElementsGeneratedBy(pipeline), textFont);
 				   p.setAlignment (Element.ALIGN_LEFT);
 				   document.add(p);
 

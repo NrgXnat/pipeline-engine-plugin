@@ -15,6 +15,7 @@ import org.apache.velocity.context.Context;
 import org.nrg.xnatx.pipeline.PipelineRepositoryManager;
 import org.nrg.xdat.om.*;
 import org.nrg.xnat.turbine.utils.ArcSpecManager;
+import org.nrg.xnatx.pipeline.helpers.PipelineRepositoryHelper;
 
 public class PipelineAdder {
 	
@@ -42,8 +43,8 @@ public class PipelineAdder {
 				    //Get the pipeline identified by the pipeline_path
 				    //Get the ArcProject element identified by the projectId
 				    //Set the pipeline for the data-type and send it to the screen for the user to add parameters
-				    PipePipelinerepository pipelineRepository = PipelineRepositoryManager.GetInstance();
-				    PipePipelinedetails pipeline = pipelineRepository.getPipeline(pipelinePath);
+				    PipelineRepositoryHelper pipelineRepositoryHelper = PipelineRepositoryManager.GetInstance();
+				    PipePipelinedetails pipeline = pipelineRepositoryHelper.getPipeline(pipelinePath);
 					if (dataType.equals(XnatProjectdata.SCHEMA_ELEMENT_NAME)) { //It's a project level pipeline
 						if (pipeline.getCustomwebpage() != null) {
 							templateFile = pipeline.getCustomwebpage();

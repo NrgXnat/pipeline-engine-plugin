@@ -13,7 +13,7 @@ $!template.setLayoutTemplate("DefaultExptList.vm")
 		<BR><BR>
 <p>
 
-#set ($pipelines = $repository.getPipeline())
+#set ($pipelines = $repository.getPipelineRepository().getPipeline())
 
 
 #if ($pipelines.size() > 0)

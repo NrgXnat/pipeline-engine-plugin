@@ -12,6 +12,7 @@ package org.apache.turbine.app.xnat.modules.screens;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.nrg.xnatx.pipeline.PipelineRepositoryManager;
+import org.nrg.xnatx.pipeline.helpers.PipelineRepositoryHelper;
 import org.nrg.xnatx.pipeline.utils.PipelineFileUtils;
 import org.nrg.pipeline.xmlbeans.PipelineData.Documentation.InputParameters;
 import org.nrg.pipeline.xmlbeans.PipelineData.Documentation.InputParameters.Parameter;
@@ -71,10 +72,10 @@ public class PipelineScreen_set_site_parameters extends AdminEditScreenA{
 			}else {
 				UserI user = TurbineUtils.getUser(data);
 				try {
-            		PipePipelinerepository pipelineRepository = PipelineRepositoryManager.GetInstance();
-            		pipelineRepository.setPipeline(pipelineDetails);
+            		PipelineRepositoryHelper pipelineRepositoryHelper = PipelineRepositoryManager.GetInstance();
+            		pipelineRepositoryHelper.setPipeline(pipelineDetails);
             		
-            		SaveItemHelper.authorizedSave(pipelineRepository,user, false, true,EventUtils.newEventInstance(EventUtils.CATEGORY.SIDE_ADMIN, EventUtils.TYPE.WEB_FORM, "Modified registered pipeline"));
+            		SaveItemHelper.authorizedSave(pipelineRepositoryHelper.getPipelineRepository(),user, false, true,EventUtils.newEventInstance(EventUtils.CATEGORY.SIDE_ADMIN, EventUtils.TYPE.WEB_FORM, "Modified registered pipeline"));
             		PipelineRepositoryManager.Reset();
     				data.setMessage("The pipeline has been added to the repository");
     				data.setScreenTemplate("ClosePage.vm");

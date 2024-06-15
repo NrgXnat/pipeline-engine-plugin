@@ -12,6 +12,7 @@ package org.apache.turbine.app.xnat.modules.screens;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.nrg.xnatx.pipeline.PipelineRepositoryManager;
+import org.nrg.xnatx.pipeline.helpers.PipelineRepositoryHelper;
 import org.nrg.xnatx.pipeline.utils.PipelineUtils;
 import org.nrg.xdat.model.PipePipelinedetailsParameterI;
 import org.nrg.xdat.om.*;
@@ -57,8 +58,8 @@ public class PipelineScreen_add_project_pipeline extends SecureReport {
 				    //Get the pipeline identified by the pipeline_path
 				    //Get the ArcProject element identified by the projectId
 				    //Set the pipeline for the data-type and send it to the screen for the user to add parameters
-				    PipePipelinerepository pipelineRepository = PipelineRepositoryManager.GetInstance();
-				    PipePipelinedetails pipeline = pipelineRepository.getPipeline(pipelinePath);
+				    PipelineRepositoryHelper pipelineRepositoryHelper = PipelineRepositoryManager.GetInstance();
+				    PipePipelinedetails pipeline = pipelineRepositoryHelper.getPipeline(pipelinePath);
 					if (dataType.equals(XnatProjectdata.SCHEMA_ELEMENT_NAME)) { //Its a project level pipeline
 						ArcProjectPipeline newPipeline = new ArcProjectPipeline();
 						String pipelineName = getName(pipeline.getPath());

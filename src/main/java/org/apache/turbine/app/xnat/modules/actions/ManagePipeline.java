@@ -17,6 +17,7 @@ import org.nrg.pipeline.PipelineLaunchParameters;
 import org.nrg.pipeline.utils.PipelineConstants;
 import org.nrg.xnatx.pipeline.PipelineRepositoryManager;
 import org.nrg.xnatx.pipeline.component.DefaultXnatPipelineLauncher;
+import org.nrg.xnatx.pipeline.helpers.PipelineRepositoryHelper;
 import org.nrg.xnatx.pipeline.utils.PipelineAdder;
 import org.nrg.xnatx.pipeline.utils.PipelineFileUtils;
 import org.nrg.xnatx.pipeline.utils.PipelineUtils;
@@ -125,11 +126,11 @@ public class ManagePipeline extends SecureAction {
             XFTItem pipeline = TurbineUtils.GetItemBySearch(data);
             if (pipeline != null) {
             	PersistentWorkflowI wrk=PersistentWorkflowUtils.buildOpenWorkflow(user, pipeline.getXSIType(), pipeline.getPKValueString(), PersistentWorkflowUtils.ADMIN_EXTERNAL_ID, EventUtils.newEventInstance(EventUtils.CATEGORY.SIDE_ADMIN, EventUtils.TYPE.WEB_FORM, "Deleted registered pipeline"));
-				PipePipelinerepository pipelines = PipelineRepositoryManager.GetInstance();
+				PipelineRepositoryHelper pipelineRepositoryHelper = PipelineRepositoryManager.GetInstance();
                 pipelinePath = pipeline.getStringProperty("path");
 				try {
                     logger.info("Attempting to delete the pipeline {}", pipelinePath);
-					SaveItemHelper.authorizedRemoveChild(pipelines.getCurrentDBVersion(),null,pipeline.getCurrentDBVersion(),user,wrk.buildEvent());
+					SaveItemHelper.authorizedRemoveChild(pipelineRepositoryHelper.getPipelineRepository().getCurrentDBVersion(),null,pipeline.getCurrentDBVersion(),user,wrk.buildEvent());
                     logger.info("Deleted {}", pipelinePath);
                     data.setMessage("Pipeline removed from site repository: " + pipelinePath);
                     PipelineRepositoryManager.RemoveReferenceToPipelineFromProjects(pipelinePath, user, wrk.buildEvent());
@@ -348,9 +349,9 @@ public class ManagePipeline extends SecureAction {
                 }
             } else {
                 try {
-                    PipePipelinerepository pipelineRepository = PipelineRepositoryManager.GetInstance();
-                    pipelineRepository.setPipeline(pipelineDetails);
-            	    SaveItemHelper.authorizedSave(pipelineRepository,user, false, true,EventUtils.newEventInstance(EventUtils.CATEGORY.SIDE_ADMIN, EventUtils.TYPE.WEB_FORM, "Added registered pipeline"));
+                    PipelineRepositoryHelper pipelineRepositoryHelper = PipelineRepositoryManager.GetInstance();
+                    pipelineRepositoryHelper.setPipeline(pipelineDetails);
+            	    SaveItemHelper.authorizedSave(pipelineRepositoryHelper.getPipelineRepository(),user, false, true,EventUtils.newEventInstance(EventUtils.CATEGORY.SIDE_ADMIN, EventUtils.TYPE.WEB_FORM, "Added registered pipeline"));
                     PipelineRepositoryManager.Reset();
                     data.setMessage("Pipeline " + pipelineDetails.getPath() + " has been successfully added to the repository");
                     data.setScreenTemplate("ClosePageAndRefresh.vm");

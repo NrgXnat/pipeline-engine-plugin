@@ -28,6 +28,7 @@ import org.nrg.xft.event.persist.PersistentWorkflowUtils.EventRequirementAbsent;
 import org.nrg.xft.security.UserI;
 import org.nrg.xft.utils.SaveItemHelper;
 import org.nrg.xnat.turbine.utils.ArcSpecManager;
+import org.nrg.xnatx.pipeline.helpers.PipelineRepositoryHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +60,7 @@ public class PipelineRepositoryManager {
 	private  static PipePipelinerepository pipelineRepository = null;
     private static final Logger logger = LoggerFactory.getLogger(PipelineRepositoryManager.class);
 
-	public synchronized static PipePipelinerepository GetInstance() {
+	public synchronized static PipelineRepositoryHelper GetInstance() {
 		if (pipelineRepository == null) {
             logger.info("Initializing PipelineRepository...");
             ArrayList<PipePipelinerepository> pipelineRepos = PipePipelinerepository.getAllPipePipelinerepositorys(null,true);
@@ -74,7 +75,7 @@ public class PipelineRepositoryManager {
         } else {
             logger.warn("Tried to initialize the pipeline repository, but failed somehow (pipelineRepository is null). Please check the logs for failures that may have caused this condition.");
 		}
-		return pipelineRepository;
+		return new PipelineRepositoryHelper(pipelineRepository);
 	}
 
     public synchronized static void SetInfo(final PipePipelinedetails pipelineDetails) throws Exception {
@@ -217,17 +218,6 @@ public class PipelineRepositoryManager {
 					 }
 			 }
 		 }
-		 /*if (deleted) {
-		       try {
-				 ValidationResults vr = aProject.getCurrentDBVersion().validate();
-		         if (vr.isValid()){
-		                 aProject.getCurrentDBVersion().save(user,false,false);
-		         }
-	           }catch(Exception e) {
-	          	 logger.error("",e);
-	           }
-			 }*/
-
 		 ArcSpecManager.Reset();
 	 }
 

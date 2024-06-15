@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.nrg.xnatx.pipeline.exception.PipelineNotConfiguredException;
+import org.nrg.xnatx.pipeline.helpers.PipelineRepositoryHelper;
 import org.nrg.xnatx.pipeline.utils.PipelineFileUtils;
 import org.nrg.pipeline.xmlbeans.PipelineData;
 import org.nrg.pipeline.xmlbeans.PipelineData.Documentation;
@@ -69,9 +70,9 @@ public class PipelineDetailsHelper {
         if (arcProject == null) 
         	return pipelineDetails;
         
-    	PipePipelinerepository pipelineRepository = PipelineRepositoryManager.GetInstance();
+    	PipelineRepositoryHelper pipelineRepositoryHelper = PipelineRepositoryManager.GetInstance();
         String pipelineDescriptorPath = "";
-        for (String[] pipelineProperties : pipelineRepository.listPipelines(arcProject)) {
+        for (String[] pipelineProperties : pipelineRepositoryHelper.listPipelines(arcProject)) {
             if (pipelineProperties[2].equals(_pipelineName) || pipelineProperties[2].equals("AUTO_ARCHIVE_"+_pipelineName) ||
                     pipelineProperties[7].equals(_pipelineName) || pipelineProperties[7].equals("AUTO_ARCHIVE_"+_pipelineName)) {
                 pipelineDescriptorPath = pipelineProperties[4];
@@ -82,7 +83,7 @@ public class PipelineDetailsHelper {
             throw new PipelineNotConfiguredException();
         }
 
-        PipePipelinedetails pipeline = pipelineRepository.getPipeline(pipelineDescriptorPath);
+        PipePipelinedetails pipeline = pipelineRepositoryHelper.getPipeline(pipelineDescriptorPath);
         PipelineData pipelineData = PipelineFileUtils.GetDocument(pipelineDescriptorPath).getPipeline();
 
         String xsiTypeAppliesTo = pipeline.getAppliesto();
@@ -102,11 +103,11 @@ public class PipelineDetailsHelper {
         if (StringUtils.isNotBlank(pipelineData.getDescription())) {
             pipelineDetails.put("description", pipelineData.getDescription());
         }
-        if (StringUtils.isNotBlank(pipelineRepository.getElementsGeneratedBy(pipeline))) {
-            pipelineDetails.put("generates", pipelineRepository.getElementsGeneratedBy(pipeline));
+        if (StringUtils.isNotBlank(pipelineRepositoryHelper.getElementsGeneratedBy(pipeline))) {
+            pipelineDetails.put("generates", pipelineRepositoryHelper.getElementsGeneratedBy(pipeline));
         }
-        if (StringUtils.isNotBlank(pipelineRepository.getDisplayName(xsiTypeAppliesTo))) {
-            pipelineDetails.put("appliesTo", pipelineRepository.getDisplayName(xsiTypeAppliesTo));
+        if (StringUtils.isNotBlank(pipelineRepositoryHelper.getDisplayName(xsiTypeAppliesTo))) {
+            pipelineDetails.put("appliesTo", pipelineRepositoryHelper.getDisplayName(xsiTypeAppliesTo));
         }
 
         if (pipelineData.isSetResourceRequirements()) {
