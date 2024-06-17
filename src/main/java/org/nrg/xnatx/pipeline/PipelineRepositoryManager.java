@@ -57,25 +57,25 @@ import java.util.List;
 
 public class PipelineRepositoryManager {
 
-	private  static PipePipelinerepository pipelineRepository = null;
+	private  static PipelineRepositoryHelper pipelineRepositoryHelper = null;
     private static final Logger logger = LoggerFactory.getLogger(PipelineRepositoryManager.class);
 
 	public synchronized static PipelineRepositoryHelper GetInstance() {
-		if (pipelineRepository == null) {
+		if (pipelineRepositoryHelper == null) {
             logger.info("Initializing PipelineRepository...");
             ArrayList<PipePipelinerepository> pipelineRepos = PipePipelinerepository.getAllPipePipelinerepositorys(null,true);
             if (pipelineRepos.size()>0) {
-            	pipelineRepository = pipelineRepos.get(0);
+				pipelineRepositoryHelper = new PipelineRepositoryHelper(pipelineRepos.get(0));
             }else { //No pipelines have been set for the site so far.
-                pipelineRepository = new PipePipelinerepository((UserI) null);
+				pipelineRepositoryHelper = new PipelineRepositoryHelper(new PipePipelinerepository((UserI) null));
             }
 		}
-		if (pipelineRepository != null) {
+		if (pipelineRepositoryHelper != null) {
             logger.info("Finished loading the pipeline repository!");
         } else {
             logger.warn("Tried to initialize the pipeline repository, but failed somehow (pipelineRepository is null). Please check the logs for failures that may have caused this condition.");
 		}
-		return new PipelineRepositoryHelper(pipelineRepository);
+		return pipelineRepositoryHelper;
 	}
 
     public synchronized static void SetInfo(final PipePipelinedetails pipelineDetails) throws Exception {
@@ -140,7 +140,7 @@ public class PipelineRepositoryManager {
 	}
 
 	   public synchronized static  void Reset(){
-		   pipelineRepository=null;
+		   pipelineRepositoryHelper=null;
 	    }
 
 
