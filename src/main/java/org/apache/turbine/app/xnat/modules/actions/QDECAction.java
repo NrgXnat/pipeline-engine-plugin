@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.xmlbeans.XmlOptions;
+import org.nrg.pipeline.PipelineLaunchParameters;
 import org.nrg.pipeline.XnatPipelineLauncher;
 import org.nrg.pipeline.xmlbeans.ParameterData;
 import org.nrg.pipeline.xmlbeans.ParameterData.Values;
@@ -104,19 +105,20 @@ public class QDECAction extends ListingAction{
 
         //Launch the job
         String pipelineName = ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("hdn_pipelinename",data));
-        XnatPipelineLauncher xnatPipelineLauncher = new XnatPipelineLauncher(data,context);
-        xnatPipelineLauncher.setAdmin_email(XDAT.getSiteConfigPreferences().getAdminEmail());
-        xnatPipelineLauncher.setAlwaysEmailAdmin(ArcSpecManager.GetInstance().getEmailspecifications_pipeline());
-        xnatPipelineLauncher.setPipelineName(pipelineName);
-        xnatPipelineLauncher.setId(id);
-        xnatPipelineLauncher.setNeedsBuildDir(false);
-        xnatPipelineLauncher.setSupressNotification(true);
-        xnatPipelineLauncher.setDataType("xnat:qdecAnalysis");
+        PipelineLaunchParameters pipelineLaunchParameters = new PipelineLaunchParameters(XDAT.getUserDetails());
+        pipelineLaunchParameters.setAdmin_email(XDAT.getSiteConfigPreferences().getAdminEmail());
+        pipelineLaunchParameters.setAlwaysEmailAdmin(ArcSpecManager.GetInstance().getEmailspecifications_pipeline());
+        pipelineLaunchParameters.setPipelineName(pipelineName);
+        pipelineLaunchParameters.setId(id);
+        pipelineLaunchParameters.setNeedsBuildDir(false);
+        pipelineLaunchParameters.setSupressNotification(true);
+        pipelineLaunchParameters.setDataType("xnat:qdecAnalysis");
 
         try {
             String paramFilePath = saveParameters(userFolderPath , analysisParameters);
-            xnatPipelineLauncher.setParameterFile(paramFilePath);
-            xnatPipelineLauncher.setParameter("parameterFile",paramFilePath);
+            pipelineLaunchParameters.setParameterFile(paramFilePath);
+            pipelineLaunchParameters.setParameter("parameterFile",paramFilePath);
+            XnatPipelineLauncher xnatPipelineLauncher = new XnatPipelineLauncher(pipelineLaunchParameters);
             xnatPipelineLauncher.launch(null);
             data.setMessage( "<p><b>Your QDEC analysis was successfully launched.  Status email will be sent to you upon its completion.</b></p>");
             data.setScreenTemplate("ClosePage.vm");
@@ -195,7 +197,7 @@ public class QDECAction extends ListingAction{
 
         param = parameters.addNewParameter();
         param.setName("userfullname");
-        param.addNewValues().setUnique(XnatPipelineLauncher.getUserName(user));
+        param.addNewValues().setUnique(PipelineLaunchParameters.getUserName(user));
 
         param = parameters.addNewParameter();
         param.setName("adminemail");

@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
+import org.nrg.pipeline.PipelineLaunchParameters;
 import org.nrg.xnatx.pipeline.PipelineManager;
 import org.nrg.pipeline.XnatPipelineLauncher;
 import org.nrg.xdat.XDAT;
@@ -50,7 +51,7 @@ public class PipelineActions extends SecureAction{
         String step = ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("pipelineStep",data));
         boolean isDescendant = ((Boolean)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedBoolean("isdescendant",data));
         ItemI data_item = TurbineUtils.GetItemBySearch(data);
-        XnatPipelineLauncher xnatPipelineLauncher = getGenericCommonParameters(data,context, project, step, data_item);
+        PipelineLaunchParameters pipelineLaunchParameters = getGenericCommonParameters(data,context, project, step, data_item);
         LinkedHashMap<ArcPipelineparameterdataI,ArrayList> paramHash = null;
         // String launcherPrefix = ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("launcherPrefix",data));
         org.nrg.xft.search.CriteriaCollection cc = new CriteriaCollection("AND");
@@ -60,13 +61,13 @@ public class PipelineActions extends SecureAction{
         if (isDescendant) {
             String pipelineXml = PipelineManager.getPathToPipelineForProject(project, step, data_item.getXSIType());
             String pipelineName = PipelineManager.getPipelineNameForProject(project, step, data_item.getXSIType());
-            xnatPipelineLauncher.setPipelineName(pipelineXml);
+            pipelineLaunchParameters.setPipelineName(pipelineXml);
             cc.addClause("wrk:workflowData.pipeline_name",pipelineName);
             paramHash = PipelineManager.getResolvedParametersForDescendantPipeline(step,project, data_item);
         }else {
             String pipelineXml = PipelineManager.getPathToPipelineForProject(project, step);
             String pipelineName = PipelineManager.getPipelineNameForProject(project, step);
-            xnatPipelineLauncher.setPipelineName(pipelineXml);
+            pipelineLaunchParameters.setPipelineName(pipelineXml);
             cc.addClause("wrk:workflowData.pipeline_name",pipelineName);
             paramHash = PipelineManager.getResolvedParametersForPipeline(step,project, data_item);
         }
@@ -81,13 +82,13 @@ public class PipelineActions extends SecureAction{
                     for (int i=0; i <valueCnt;i++) {
                         String dataParam = paramStr + aParameter.getName() + ":"+i;
                         if (TurbineUtils.HasPassedParameter(dataParam, data)){
-                            xnatPipelineLauncher.setParameter(parameterTrueName, ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter(dataParam,data)));
+                            pipelineLaunchParameters.setParameter(parameterTrueName, ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter(dataParam,data)));
                         }
                     }
                 }else {
                     String dataParam = paramStr + aParameter.getName();
                     if (TurbineUtils.HasPassedParameter(dataParam, data)){
-                        xnatPipelineLauncher.setParameter(parameterTrueName, ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter(dataParam,data)));
+                        pipelineLaunchParameters.setParameter(parameterTrueName, ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter(dataParam,data)));
                     }
                 }
             }
@@ -97,37 +98,39 @@ public class PipelineActions extends SecureAction{
         if (workflows != null && workflows.size() > 0) {
             WrkWorkflowdata workFlow = workflows.get(0);
             if (workFlow.getStatus().equals(org.nrg.xdat.om.base.BaseWrkWorkflowdata.AWAITING_ACTION)) {
-                xnatPipelineLauncher.setStartAt(workFlow.getNextStepId());
+                pipelineLaunchParameters.setStartAt(workFlow.getNextStepId());
             }
         }
+        XnatPipelineLauncher xnatPipelineLauncher = new XnatPipelineLauncher(pipelineLaunchParameters);
         xnatPipelineLauncher.launch();
         data.setMessage("<p><b>The build process was successfully launched.  Status email will be sent upon its completion.</b></p>");
         data.setScreenTemplate("ClosePage.vm");
     }
 
-    private XnatPipelineLauncher getGenericCommonParameters(RunData data, Context context, String projectId,  String step, ItemI item) throws Exception {
-        XnatPipelineLauncher xnatPipelineLauncher = new XnatPipelineLauncher(data,context);
-        xnatPipelineLauncher.setAdmin_email(XDAT.getSiteConfigPreferences().getAdminEmail());
-        xnatPipelineLauncher.setAlwaysEmailAdmin(ArcSpecManager.GetInstance().getEmailspecifications_pipeline());
+    private PipelineLaunchParameters getGenericCommonParameters(RunData data, Context context, String projectId,  String step, ItemI item) throws Exception {
+        PipelineLaunchParameters pipelineLaunchParameters = new PipelineLaunchParameters(XDAT.getUserDetails());
+
+        pipelineLaunchParameters.setAdmin_email(XDAT.getSiteConfigPreferences().getAdminEmail());
+        pipelineLaunchParameters.setAlwaysEmailAdmin(ArcSpecManager.GetInstance().getEmailspecifications_pipeline());
         UserI user = TurbineUtils.getUser(data);
-        xnatPipelineLauncher.setNeedsBuildDir(true);
-        xnatPipelineLauncher.setSupressNotification(true);
-        xnatPipelineLauncher.setId((String)item.getProperty("ID"));
-        xnatPipelineLauncher.setDataType(item.getXSIType());
-        xnatPipelineLauncher.setExternalId(projectId);
-        xnatPipelineLauncher.setParameter("useremail", user.getEmail());
-        xnatPipelineLauncher.setParameter("userfullname", XnatPipelineLauncher.getUserName(user));
-        xnatPipelineLauncher.setParameter("adminemail", ArcSpecManager.GetInstance().getSiteAdminEmail());
-        xnatPipelineLauncher.setParameter("xnatserver", ArcSpecManager.GetInstance().getSiteId());
-        xnatPipelineLauncher.setParameter("mailhost", ArcSpecManager.GetInstance().getSmtpHost());
+        pipelineLaunchParameters.setNeedsBuildDir(true);
+        pipelineLaunchParameters.setSupressNotification(true);
+        pipelineLaunchParameters.setId((String)item.getProperty("ID"));
+        pipelineLaunchParameters.setDataType(item.getXSIType());
+        pipelineLaunchParameters.setExternalId(projectId);
+        pipelineLaunchParameters.setParameter("useremail", user.getEmail());
+        pipelineLaunchParameters.setParameter("userfullname", pipelineLaunchParameters.getUserName(user));
+        pipelineLaunchParameters.setParameter("adminemail", ArcSpecManager.GetInstance().getSiteAdminEmail());
+        pipelineLaunchParameters.setParameter("xnatserver", ArcSpecManager.GetInstance().getSiteId());
+        pipelineLaunchParameters.setParameter("mailhost", ArcSpecManager.GetInstance().getSmtpHost());
 
         String emailsStr =  ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("emailField",data));
         if (emailsStr != null) {
             String[] emails = emailsStr.trim().split(",");
             for (int i = 0 ; i < emails.length; i++)
-                if (emails[i] != null && !emails[i].equals("")) xnatPipelineLauncher.notify(emails[i]);
+                if (emails[i] != null && !emails[i].equals("")) pipelineLaunchParameters.notificationEmailId(emails[i]);
         }
-        return xnatPipelineLauncher;
+        return pipelineLaunchParameters;
     }
 
     public void doBuild(RunData data, Context context) throws Exception{
@@ -147,34 +150,33 @@ public class PipelineActions extends SecureAction{
             String pipelineXml = PipelineManager.getPathToPipelineForProject(projectId, step);
             int selectedCountLast = 0;
             for (int i = 1; i <= totalSessionsToBuild; i++) {
-                XnatPipelineLauncher xnatPipelineLauncher = getCommonParameters(data,context, projectId, pipelineXml,step);
-                if (xnatPipelineLauncher == null) throw new Exception("Unable to construct the Xnat Pipeline Launcher");
+                PipelineLaunchParameters pipelineLaunchParameters = getCommonParameters(data,context, projectId, pipelineXml,step);
                 String sessionParamCode = ":session" + i;
                 if (TurbineUtils.HasPassedParameter("param" + sessionParamCode + ":sessionId", data)){
                     Hashtable<String,String> sessionParams = getParametersForKey(data,context,"param" + sessionParamCode + ":",sessionParamCode);
                     String sessionId = sessionParams.get("param:sessionid");
                     String xnat_sessionId = sessionParams.get("param:xnat_sessionid");
-                    xnatPipelineLauncher.setId(sessionId);
+                    pipelineLaunchParameters.setId(sessionId);
                     if (sessionParams.keySet().size() > 0) {
-                        xnatPipelineLauncher.setParameter("xnat_sessionId",xnat_sessionId);
-                        setCommandLineArguments(data,sessionParams,projectId,step, xnatPipelineLauncher);
+                        pipelineLaunchParameters.setParameter("xnat_sessionId",xnat_sessionId);
+                        setCommandLineArguments(data,sessionParams,projectId,step, pipelineLaunchParameters);
                     }
                     selectedCountLast++;
-                    if (selectedCountLast==selectedCount) xnatPipelineLauncher.setParameter("isLast","1");
-                    xnatPipelineLauncher.setParameter("projectId",projectId);
+                    if (selectedCountLast==selectedCount) pipelineLaunchParameters.setParameter("isLast","1");
+                    pipelineLaunchParameters.setParameter("projectId",projectId);
+                    XnatPipelineLauncher xnatPipelineLauncher = new XnatPipelineLauncher(pipelineLaunchParameters);
                     xnatPipelineLauncher.launch();
                 }
             }
             String destinationPage = ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("destinationpage",data));
-            System.out.println("BuildPipelineActions::doBuild Destination page is " + destinationPage);
-            System.out.println(((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("search_value",data)));
-            System.out.println(((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("search_element",data)));
-            System.out.println(((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("search_field",data)));
-            System.out.println("BuildPipelineActions::doBuild END");
+            logger.debug("BuildPipelineActions::doBuild Destination page is " + destinationPage);
+            logger.debug(((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("search_value",data)));
+            logger.debug(((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("search_element",data)));
+            logger.debug(((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("search_field",data)));
+            logger.debug("BuildPipelineActions::doBuild END");
 
             if (destinationPage != null) {
                 data.setRedirectURI(TurbineUtils.GetRelativeServerPath(data)+ "/app/template/" + destinationPage + "/search_field/" + ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("search_field",data)) +  "/search_value/" +  ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("search_value",data))  + "/search_element/" +  ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("search_element",data)));
-                //data.setScreenTemplate(destinationPage);
             }else {
                 String msg = "<p><b>The build process was successfully launched.  Status email will be sent upon its completion.</b></p>";
                 context.put("msg",msg);
@@ -188,32 +190,34 @@ public class PipelineActions extends SecureAction{
     }
 
 
-    private XnatPipelineLauncher getCommonParameters(RunData data, Context context, String projectId, String pipelineName, String step) throws Exception {
-        XnatPipelineLauncher xnatPipelineLauncher = new XnatPipelineLauncher(data,context);
-        xnatPipelineLauncher.setAdmin_email(XDAT.getSiteConfigPreferences().getAdminEmail());
-        xnatPipelineLauncher.setAlwaysEmailAdmin(ArcSpecManager.GetInstance().getEmailspecifications_pipeline());
-        xnatPipelineLauncher.setPipelineName(pipelineName);
-        UserI user = TurbineUtils.getUser(data);
-        xnatPipelineLauncher.setNeedsBuildDir(true);
-        xnatPipelineLauncher.setExternalId(projectId);
-        xnatPipelineLauncher.setSupressNotification(true);
-        xnatPipelineLauncher.setDataType("xnat:mrSessionData");
-        xnatPipelineLauncher.setParameter("useremail", user.getEmail());
-        xnatPipelineLauncher.setParameter("userfullname", XnatPipelineLauncher.getUserName(user));
-        xnatPipelineLauncher.setParameter("adminemail", XDAT.getSiteConfigPreferences().getAdminEmail());
-        xnatPipelineLauncher.setParameter("xnatserver", TurbineUtils.GetSystemName());
-        xnatPipelineLauncher.setParameter("mailhost", XDAT.getNotificationsPreferences().getSmtpServer().getHostname());
+    private PipelineLaunchParameters getCommonParameters(RunData data, Context context, String projectId, String pipelineName, String step) throws Exception {
+        UserI user = XDAT.getUserDetails();
+
+        PipelineLaunchParameters pipelineLaunchParameters = new PipelineLaunchParameters(user);
+
+        pipelineLaunchParameters.setAdmin_email(XDAT.getSiteConfigPreferences().getAdminEmail());
+        pipelineLaunchParameters.setAlwaysEmailAdmin(ArcSpecManager.GetInstance().getEmailspecifications_pipeline());
+        pipelineLaunchParameters.setPipelineName(pipelineName);
+        pipelineLaunchParameters.setNeedsBuildDir(true);
+        pipelineLaunchParameters.setExternalId(projectId);
+        pipelineLaunchParameters.setSupressNotification(true);
+        pipelineLaunchParameters.setDataType("xnat:mrSessionData");
+        pipelineLaunchParameters.setParameter("useremail", user.getEmail());
+        pipelineLaunchParameters.setParameter("userfullname", PipelineLaunchParameters.getUserName(user));
+        pipelineLaunchParameters.setParameter("adminemail", XDAT.getSiteConfigPreferences().getAdminEmail());
+        pipelineLaunchParameters.setParameter("xnatserver", TurbineUtils.GetSystemName());
+        pipelineLaunchParameters.setParameter("mailhost", XDAT.getNotificationsPreferences().getSmtpServer().getHostname());
 
         String emailsStr =  ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("emailField",data));
         if (emailsStr != null) {
             String[] emails = emailsStr.trim().split(",");
             for (int i = 0 ; i < emails.length; i++)
-                if (emails[i] != null && !emails[i].equals("")) xnatPipelineLauncher.notify(emails[i]);
+                if (emails[i] != null && !emails[i].equals("")) pipelineLaunchParameters.notificationEmailId(emails[i]);
         }
-        return xnatPipelineLauncher;
+        return pipelineLaunchParameters;
     }
 
-    private Hashtable<String,String> setCommandLineArguments(RunData data, Hashtable<String,String> paramNameValue, String projectId, String step, XnatPipelineLauncher xnatPipelineLauncher) {
+    private Hashtable<String,String> setCommandLineArguments(RunData data, Hashtable<String,String> paramNameValue, String projectId, String step, final PipelineLaunchParameters pipelineLaunchParameters) {
         Hashtable<String,String> trueNameValues = new Hashtable<String,String>();
         try {
             List parameters = PipelineManager.getParametersForPipeline(projectId, step);
@@ -273,14 +277,12 @@ public class PipelineActions extends SecureAction{
                     String trueParamName = (String)trueName.get(paramName);
                     String paramValues = (String)parametersHash.get(paramName);
                     if (paramValues.endsWith(",")) paramValues = paramValues.substring(0,paramValues.length()-1);
-                    //System.out.println("Adding parameter values for " + trueParamName + " " + paramValues);
-                    xnatPipelineLauncher.setParameter(trueParamName, paramValues);
+                    pipelineLaunchParameters.setParameter(trueParamName, paramValues);
                     trueNameValues.put(trueParamName,paramValues);
                 }
             }
         }catch(Exception e) {
             logger.debug("Unable to construct the build parameters for step " + step + " " + e.getMessage() + " " + e.getCause(),e);
-            //AdminUtils.sendErrorNotification(data,"Unable to construct the Build statement for "  + " Step " + step);
         }
         return trueNameValues;
     }

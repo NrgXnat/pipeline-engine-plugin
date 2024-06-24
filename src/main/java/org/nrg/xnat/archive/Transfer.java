@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.nrg.pipeline.PipelineLaunchParameters;
 import org.nrg.pipeline.XnatPipelineLauncher;
 import org.nrg.xdat.XDAT;
 import org.nrg.xdat.turbine.utils.AdminUtils;
@@ -98,45 +99,43 @@ public class Transfer {
             if (this.isPlaceInRaw()){
                 arc += "SCANS" + File.separator;
             }
+            PipelineLaunchParameters pipelineLaunchParameters = new PipelineLaunchParameters((UserI)user);
 
-            XnatPipelineLauncher xnatPipelineLauncher = new XnatPipelineLauncher((UserI)user);
            // Modified by MR - 2010/03/11 AdminEmail is set in pipeline setup setup
             // xnatPipelineLauncher.setAdmin_email(XDAT.getSiteConfigPreferences().getAdminEmail());
            //Modified bt MR - 2010/03/11 There is a setting for Site Admin to set email notification for Transfer pipeline
            // xnatPipelineLauncher.setAlwaysEmailAdmin(ArcSpecManager.GetInstance().getEmailspecifications_pipeline());
             String pipelineName = "xnat_tools/Transfer.xml";
-            xnatPipelineLauncher.setPipelineName(pipelineName);
-            xnatPipelineLauncher.setNeedsBuildDir(false);
+            pipelineLaunchParameters.setPipelineName(pipelineName);
+            pipelineLaunchParameters.setNeedsBuildDir(false);
            
             if(ArcSpecManager.allowTransferEmail()){
-                xnatPipelineLauncher.setParameter("notifyAdmin","1");
+                pipelineLaunchParameters.setParameter("notifyAdmin","1");
             }else{
-                xnatPipelineLauncher.setParameter("notifyAdmin","0");
+                pipelineLaunchParameters.setParameter("notifyAdmin","0");
             }
             
             //Launcher will not send an email. 
             //The pipeline has a notify step which will CC to Admin if 
             //the parameter notify is set to 1.
-            xnatPipelineLauncher.setSupressNotification(true);
-            xnatPipelineLauncher.setId(mr.getId());
-            xnatPipelineLauncher.setLabel(mr.getLabel());
-            xnatPipelineLauncher.setDataType(mr.getXSIType());
-            xnatPipelineLauncher.setExternalId(mr.getProject());
-            xnatPipelineLauncher.setParameter("sourceDir", prearc);
-            xnatPipelineLauncher.setParameter("destinationDir", arc);
-            xnatPipelineLauncher.setParameter("session", mr.getId());
-            xnatPipelineLauncher.setParameter("sessionLabel", mr.getLabel());
-            xnatPipelineLauncher.setParameter("useremail", user.getEmail());
-            xnatPipelineLauncher.setParameter("userfullname", XnatPipelineLauncher.getUserName(user));
-            xnatPipelineLauncher.setParameter("adminemail", admin_email);
-            xnatPipelineLauncher.setParameter("xnatserver", system);
-            xnatPipelineLauncher.setParameter("mailhost", XDAT.getNotificationsPreferences().getSmtpServer().getHostname());
-            xnatPipelineLauncher.setParameter("sessionType", mr.getXSIType());
-            xnatPipelineLauncher.setParameter("xnat_project", mr.getProject());
-            xnatPipelineLauncher.setParameter("logDir", XDAT.getSiteConfigPreferences().getCachePath() + "logs" + "/" + "transfer");
-           // xnatPipelineLauncher.setParameter("notify","" +getNotifies());
- 
-            xnatPipelineLauncher.setWaitFor(waitForTransfer);            
+            pipelineLaunchParameters.setSupressNotification(true);
+            pipelineLaunchParameters.setId(mr.getId());
+            pipelineLaunchParameters.setLabel(mr.getLabel());
+            pipelineLaunchParameters.setDataType(mr.getXSIType());
+            pipelineLaunchParameters.setExternalId(mr.getProject());
+            pipelineLaunchParameters.setParameter("sourceDir", prearc);
+            pipelineLaunchParameters.setParameter("destinationDir", arc);
+            pipelineLaunchParameters.setParameter("session", mr.getId());
+            pipelineLaunchParameters.setParameter("sessionLabel", mr.getLabel());
+            pipelineLaunchParameters.setParameter("useremail", user.getEmail());
+            pipelineLaunchParameters.setParameter("userfullname", PipelineLaunchParameters.getUserName(user));
+            pipelineLaunchParameters.setParameter("adminemail", admin_email);
+            pipelineLaunchParameters.setParameter("xnatserver", system);
+            pipelineLaunchParameters.setParameter("mailhost", XDAT.getNotificationsPreferences().getSmtpServer().getHostname());
+            pipelineLaunchParameters.setParameter("sessionType", mr.getXSIType());
+            pipelineLaunchParameters.setParameter("xnat_project", mr.getProject());
+            pipelineLaunchParameters.setParameter("logDir", XDAT.getSiteConfigPreferences().getCachePath() + "logs" + "/" + "transfer");
+            pipelineLaunchParameters.setWaitFor(waitForTransfer);
             
             if (cache){
             	if(XFT.VERBOSE)System.out.print("Caching Uploaded Files...");
@@ -146,17 +145,12 @@ public class Transfer {
                 }
                 File parent = prearcF.getParentFile();
                 cachePath +="transfer_bk" + File.separator + parent.getName() + File.separator + prearcF.getName();
-                xnatPipelineLauncher.setParameter("cachepath", cachePath);
+                pipelineLaunchParameters.setParameter("cachepath", cachePath);
             }
 
-        /*    if (mr.getXSIType().equals("xnat:mrSessionData")) {
-                xnatPipelineLauncher.setParameter("createQc", "1");
-                
-                xnatPipelineLauncher.setParameter("tbpath", QCImageCreator.getQCThumbnailPathForSession(mr.getProject()));
-                xnatPipelineLauncher.setParameter("cpath", QCImageCreator.getQCCachePathForSession(mr.getProject()));
-            } */
-            
-          
+
+            XnatPipelineLauncher xnatPipelineLauncher = new XnatPipelineLauncher(pipelineLaunchParameters);
+
             _successful = xnatPipelineLauncher.launch(null);
             if (!_successful) {
                 throw new Exception("Unable to complete transfer");
@@ -216,12 +210,7 @@ public class Transfer {
         }
         return _successful;
     }
-    
-    /*public void run() {
-        super.run();
-        execute();
-    }*/
-  
+
     
     public String getEmailCompletionMessage(UserI user, String message, String system, String admin_email) throws Exception{
         VelocityContext context = new VelocityContext();
