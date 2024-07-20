@@ -8,7 +8,6 @@ pipelineSettingsTab:
   label: Settings
   group: pipelineTabGroup
   contents:
-    ${pipelineSettings}
     ${autoRunSettings}
 
 siteSettings:
@@ -20,31 +19,12 @@ siteSettings:
       pipelineTabGroup: Pipeline
   contains: tabs
   tabs:
-     ${pipelineSettingsTab}
+    ${pipelineSettingsTab}
 
 ####
 #### Pipeline Site Settings Panels
 ####
 
-processingUrl:
-  kind: panel.input.text
-  name: processingUrl
-  label: Processing Url
-  validation: allow-empty url onblur
-  description: >
-    The address to be used for processing. If this is left blank, pipelines will use the site
-    URL. If your pipelines need to connect to an internal URL, different from your external
-    site URL, provide one here.
-
-pipelineSettings:
-  kind: panel.form
-  label: Pipeline Settings
-  group: pipelineTabGroup
-  method: POST
-  contentType: json
-  url: /xapi/siteConfig
-  contents:
-    ${processingUrl}
 
 autoRunSettings:
   kind: panel.form
