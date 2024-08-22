@@ -276,7 +276,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifacts {
-                artifact sourceJar
+                artifact sourcesJar
                 artifact javadocJar
                 artifact xnatPluginJar
             }
