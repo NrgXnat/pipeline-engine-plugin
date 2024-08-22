@@ -1,29 +1,23 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This plugin contains all the frontend and backend components in XNAT that allow the use of the Pipeline Engine. These files have been moved from XNAT version 1.8.10. 
+From XNAT 1.9+, the pipeline engine features can not be used without deploying this plugin.
 
-### What is this repository for? ###
+The Container Service is the preferred way of executing jobs in XNAT. 
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+In order to use the Pipeline Engine via XNAT, from XNAT 1.9+ onwards, you would have to deploy:
 
-### Contribution guidelines ###
+1. The Pipeline Engine Plugin in the XNAT_HOME/plugins folder
 
-* Writing tests
-* Code review
-* Other guidelines
+AND
 
-### Who do I talk to? ###
+2. Install the Pipeline Engine on the XNAT host
 
-* Repo owner or admin
-* Other community or team contact
+### Building the plugin ###
+
+Execute the command from the source folder:
+
+./grawdlew clean xnatPluginJar
