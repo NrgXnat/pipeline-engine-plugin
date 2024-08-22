@@ -271,3 +271,25 @@ task xnatPluginJar(type: Jar) {
     }
     with jar
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifacts {
+                artifact sourceJar
+                artifact javadocJar
+                artifact xnatPluginJar
+            }
+    }
+    repositories {
+        maven {
+            if (project.version.endsWith("-SNAPSHOT")) {
+                url "https://nrgxnat.jfrog.io/nrgxnat/libs-snapshot-local"
+            } else {
+                url "https://nrgxnat.jfrog.io/nrgxnat/libs-release-local"
+            }
+            // The value for name must match <id> in ~/.m2/settings.xml
+            name = "XNAT_Artifactory"
+        }
+    }
+}
