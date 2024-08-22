@@ -20,4 +20,4 @@ AND
 
 Execute the command from the source folder:
 
-./grawdlew clean xnatPluginJar
+./gradlew clean xnatPluginJar
