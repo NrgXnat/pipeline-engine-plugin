@@ -280,6 +280,7 @@ publishing {
                 artifact javadocJar
                 artifact xnatPluginJar
             }
+        }
     }
     repositories {
         maven {
