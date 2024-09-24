@@ -31,7 +31,7 @@ plugins {
 }
 
 group "org.nrg.xnatx.plugins"
-version "1.2.0"
+version "1.2.0-SNAPSHOT"
 description "XNAT Pipeline Engine UI Plugin"
 
 def pipelineVersion = "1.8.10"
