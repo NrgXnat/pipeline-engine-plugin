@@ -122,7 +122,7 @@
 <!-- if not a project owner, hide the tab added to the project page -->
 <script>
  console.log("Not found and removing");
-        jq(document).find('a[href=#Pipelines]').parents('li').hide();
+    $('ul.yui-nav li:has(a[href$="Pipelines"])').remove();
 </script>
 
 #end
