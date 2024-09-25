@@ -9,7 +9,7 @@
 
 buildscript {
     ext {
-        vXnat = "1.9.0-SNAPSHOT"
+        vXnat = "1.9.0"
         vAxis = "1.4"
         vXmlBeans = "2.6.0"
         vPlexiViewer = "1.8.10"
@@ -31,7 +31,7 @@ plugins {
 }
 
 group "org.nrg.xnatx.plugins"
-version "1.1.0-RC-SNAPSHOT"
+version "1.1.0"
 description "XNAT Pipeline Engine UI Plugin"
 
 def pipelineVersion = "1.8.10"
