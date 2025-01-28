@@ -9,7 +9,7 @@
 
 buildscript {
     ext {
-        vXnat = "1.9.1-SNAPSHOT"
+        vXnat = "1.10.0-SNAPSHOT"
         vAxis = "1.4"
         vXmlBeans = "2.6.0"
         vPlexiViewer = "1.8.10"
@@ -25,7 +25,7 @@ plugins {
     id "maven-publish"
     id "com.dorongold.task-tree" version "1.5"
     id "com.palantir.git-version" version "0.12.1"
-    id "io.franzbecker.gradle-lombok" version "4.0.0"
+    id "io.franzbecker.gradle-lombok" version "5.0.0"
     id "io.spring.dependency-management" version "1.0.11.RELEASE"
     id "net.linguica.maven-settings" version "0.5"
 }
@@ -226,13 +226,13 @@ jacocoTestReport {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    classifier "sources"
+    archiveClassifier.set "sources"
     manifest {
         from gitManifest
     }
@@ -240,7 +240,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 task javadocJar(type: Jar) {
-    classifier "javadoc"
+    archiveClassifier.set "javadoc"
     manifest {
         from gitManifest
     }
