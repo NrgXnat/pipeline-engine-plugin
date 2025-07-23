@@ -9,7 +9,7 @@
 
 buildscript {
     ext {
-        vXnat = "1.9.0"
+        vXnat = "1.10.0-RC-SNAPSHOT"
         vAxis = "1.4"
         vXmlBeans = "2.6.0"
         vPlexiViewer = "1.8.10"
@@ -25,13 +25,13 @@ plugins {
     id "maven-publish"
     id "com.dorongold.task-tree" version "1.5"
     id "com.palantir.git-version" version "0.12.1"
-    id "io.franzbecker.gradle-lombok" version "4.0.0"
+    id "io.franzbecker.gradle-lombok" version "5.0.0"
     id "io.spring.dependency-management" version "1.0.11.RELEASE"
     id "net.linguica.maven-settings" version "0.5"
 }
 
 group "org.nrg.xnatx.plugins"
-version "1.1.0"
+version "1.1.0-java21-RC-SNAPSHOT"
 description "XNAT Pipeline Engine UI Plugin"
 
 def pipelineVersion = "1.8.10"
@@ -48,9 +48,9 @@ repositories {
 configurations {
     all {
         exclude group: "junit"
-        exclude group: "net.logstash.logback"
+        // exclude group: "net.logstash.logback"
         exclude group: "org.slf4j", module: "log4j-over-slf4j"
-        exclude group: "org.slf4j", module: "slf4j-log4j12"
+        // exclude group: "org.slf4j", module: "slf4j-log4j12"
         exclude group: "org.slf4j", module: "slf4j-simple"
     }
     implementation.extendsFrom(implementAndInclude)
@@ -98,7 +98,6 @@ dependencies {
     implementation "org.slf4j:slf4j-api"
     implementation "org.slf4j:slf4j-log4j12"
     implementation "org.slf4j:jul-to-slf4j"
-    implementation "log4j:log4j"
     implementation "net.sourceforge.saxon:saxon"
     implementAndInclude ("axis:axis:${vAxis}") {
         transitive = false
@@ -226,13 +225,13 @@ jacocoTestReport {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    classifier "sources"
+    archiveClassifier.set "sources"
     manifest {
         from gitManifest
     }
@@ -240,7 +239,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 task javadocJar(type: Jar) {
-    classifier "javadoc"
+    archiveClassifier.set "javadoc"
     manifest {
         from gitManifest
     }
