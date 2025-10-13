@@ -1,4 +1,4 @@
 <!-- Sequence: 70 -->
-#if($data.getSession().getAttribute("user").checkRole("Admin"))
+#if($user.isSiteAdmin())
 <li><a href="${SITE_ROOT}/app/template/XDATScreen_manage_pipeline.vm">Pipelines</a></li>
 #end
