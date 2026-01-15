@@ -58,6 +58,18 @@ public class DefaultXnatPipelineLauncher implements PipelineLauncherService {
         this.pipelineLaunchParameters = pipelineLaunchParameters;
     }
 
+    public void setPipelineName(String pipelineName) {
+        pipelineLaunchParameters.setPipelineName(pipelineName);
+    }
+
+    public void notify(String... emails) {
+        pipelineLaunchParameters.notificationEmailId(emails);
+    }
+
+    public void setParameterFile(String parameterFile) {
+        pipelineLaunchParameters.setParameterFile(parameterFile);
+    }
+
     public void setBuildDir(String path) {
         if (StringUtils.isBlank(path)) {
             return;
