@@ -88,7 +88,9 @@ public class DefaultXnatPipelineLauncher implements PipelineLauncherService {
         pipelineLaunchParameters.setNeedsBuildDir(needsBuildDir);
     }
 
-
+    public void setSupressNotification(boolean supressNotification) {
+        pipelineLaunchParameters.setSupressNotification(supressNotification);
+    }
 
     /*
      * Use this method when you want the job to be executed after schedule
