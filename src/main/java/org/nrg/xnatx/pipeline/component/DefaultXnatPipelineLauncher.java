@@ -58,6 +58,18 @@ public class DefaultXnatPipelineLauncher implements PipelineLauncherService {
         this.pipelineLaunchParameters = pipelineLaunchParameters;
     }
 
+    public void setPipelineName(String pipelineName) {
+        pipelineLaunchParameters.setPipelineName(pipelineName);
+    }
+
+    public void notify(String... emails) {
+        pipelineLaunchParameters.notificationEmailId(emails);
+    }
+
+    public void setParameterFile(String parameterFile) {
+        pipelineLaunchParameters.setParameterFile(parameterFile);
+    }
+
     public void setBuildDir(String path) {
         if (StringUtils.isBlank(path)) {
             return;
@@ -76,7 +88,9 @@ public class DefaultXnatPipelineLauncher implements PipelineLauncherService {
         pipelineLaunchParameters.setNeedsBuildDir(needsBuildDir);
     }
 
-
+    public void setSupressNotification(boolean supressNotification) {
+        pipelineLaunchParameters.setSupressNotification(supressNotification);
+    }
 
     /*
      * Use this method when you want the job to be executed after schedule
