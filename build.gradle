@@ -31,10 +31,11 @@ plugins {
 }
 
 group "org.nrg.xnatx.plugins"
-version "1.2.0"
+version "1.2.1-SNAPSHOT"
 description "XNAT Pipeline Engine UI Plugin"
 
 def pipelineVersion = "1.8.10"
+def pipelineXnatTools = "1.9.0"
 def pipelineDependencyVersion = "1.0"
 
 repositories {
@@ -141,7 +142,7 @@ dependencies {
     implementAndInclude ("org.nrg.xnat.pipeline:xnat-pipeline:${pipelineVersion}") {
         transitive = false
     }
-    implementAndInclude ("org.nrg.xnat.pipeline:xnat-tools:${pipelineVersion}"){
+    implementAndInclude ("org.nrg.xnat.pipeline:xnat-tools:${pipelineXnatTools}"){
         transitive = false
     }
     implementAndInclude ("com.lowagie:itext") {
