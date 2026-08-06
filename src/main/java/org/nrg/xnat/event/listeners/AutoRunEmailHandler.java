@@ -27,7 +27,7 @@ import static reactor.bus.selector.Selectors.R;
 
 import java.util.Map;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * The Class AutoRunEmailHandler.

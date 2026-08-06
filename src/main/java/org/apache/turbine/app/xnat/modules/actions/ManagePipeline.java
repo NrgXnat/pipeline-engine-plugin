@@ -10,6 +10,7 @@
 package org.apache.turbine.app.xnat.modules.actions;
 
 import org.apache.turbine.modules.ScreenLoader;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.xmlbeans.XmlOptions;
@@ -66,7 +67,8 @@ public class ManagePipeline extends SecureAction {
 
     private static final Logger logger = LoggerFactory.getLogger(ManagePipeline.class);
 
-    public void doPerform(RunData data, Context context) throws Exception {
+    public void doPerform(PipelineData pipelineData, Context context) throws Exception {
+        final RunData data = pipelineData.getRunData();
         String task = ((String) TurbineUtils.GetPassedParameter("task", data));
         if (task != null) {
             if (logger.isDebugEnabled()) {
@@ -94,7 +96,8 @@ public class ManagePipeline extends SecureAction {
         logger.debug("I'm in the doEdit() method, which is somewhat odd as there's nothing to be done here.");
     }
 
-    public void doAddpipeline(RunData data, Context context) {
+    public void doAddpipeline(PipelineData pipelineData, Context context) {
+        final RunData data = pipelineData.getRunData();
         PipelineAdder pipelineAdder = new PipelineAdder();
         pipelineAdder.prepareScreen(data, context);
     }
@@ -150,7 +153,8 @@ public class ManagePipeline extends SecureAction {
         data.setScreenTemplate("ClosePageAndRefresh.vm");
     }
 
-    public void doRedirect(RunData data, Context context) throws Exception {
+    public void doRedirect(PipelineData pipelineData, Context context) throws Exception {
+        final RunData data = pipelineData.getRunData();
         try {
             String projectId = ((String) TurbineUtils.GetPassedParameter("project", data));
             String pipelinePath = ((String) TurbineUtils.GetPassedParameter("pipeline", data));
@@ -160,11 +164,11 @@ public class ManagePipeline extends SecureAction {
             try {
 		        ArcProject arcProject = ArcSpecManager.GetFreshInstance().getProjectArc(projectId);
                 if (schemaType.equals(XnatProjectdata.SCHEMA_ELEMENT_NAME)) {
-                    ArcProjectPipeline pipelineData = (ArcProjectPipeline) arcProject.getPipelineByPath(pipelinePath);
-                    if (pipelineData.getCustomwebpage() != null) customWebPage = pipelineData.getCustomwebpage();
+                    ArcProjectPipeline pipe = (ArcProjectPipeline) arcProject.getPipelineByPath(pipelinePath);
+                    if (pipe.getCustomwebpage() != null) customWebPage = pipe.getCustomwebpage();
                 } else {
-                    ArcPipelinedataI pipelineData = arcProject.getPipelineForDescendantByPath(schemaType, pipelinePath);
-                    if (pipelineData.getCustomwebpage() != null) customWebPage = pipelineData.getCustomwebpage();
+                    ArcPipelinedataI pipe = arcProject.getPipelineForDescendantByPath(schemaType, pipelinePath);
+                    if (pipe.getCustomwebpage() != null) customWebPage = pipe.getCustomwebpage();
                 }
             } catch (PipelineNotFoundException pne) {
                 // Could be an additional pipeline not yet defined for the
@@ -200,7 +204,8 @@ public class ManagePipeline extends SecureAction {
     }
 
     @SuppressWarnings("unused")
-    public void doAddprojectpipeline(RunData data, Context context) throws Exception {
+    public void doAddprojectpipeline(PipelineData pipelineData, Context context) throws Exception {
+        final RunData data = pipelineData.getRunData();
     	UserI user = TurbineUtils.getUser(data);
         XFTItem found;
         try {
@@ -320,12 +325,13 @@ public class ManagePipeline extends SecureAction {
 
     // Final step of adding a pipeline to the Site
     @SuppressWarnings("unused")
-    public void doAdd(RunData data, Context context) throws Exception {
+    public void doAdd(PipelineData pipelineData, Context context) throws Exception {
+        final RunData data = pipelineData.getRunData();
     	UserI user = TurbineUtils.getUser(data);
         XFTItem found = null;
 
 		try {
-            EditScreenA screen = (EditScreenA) ScreenLoader.getInstance().getInstance("XDATScreen_add_pipeline");
+            EditScreenA screen = (EditScreenA) ScreenLoader.getInstance().getAssembler("XDATScreen_add_pipeline");
             XFTItem newItem = (XFTItem) screen.getEmptyItem(data);
             TurbineUtils.OutputDataParameters(data);
             PopulateItem populater = PopulateItem.Populate(data, "pipe:pipelineDetails", true, newItem);
@@ -375,7 +381,8 @@ public class ManagePipeline extends SecureAction {
     }
 
     @SuppressWarnings("unused")
-    public void doLaunchpipeline(RunData data, Context context) throws Exception {
+    public void doLaunchpipeline(PipelineData pipelineData, Context context) throws Exception {
+        final RunData data = pipelineData.getRunData();
     	UserI user = TurbineUtils.getUser(data);
             XFTItem item = TurbineUtils.GetItemBySearch(data);
         String pipeline_path = ((String) TurbineUtils.GetPassedParameter("pipeline_path",data));

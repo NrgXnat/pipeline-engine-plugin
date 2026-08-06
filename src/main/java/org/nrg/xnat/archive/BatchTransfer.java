@@ -30,7 +30,7 @@ import org.nrg.xft.security.UserI;
 import org.nrg.xft.utils.FileUtils;
 import org.nrg.xft.utils.SaveItemHelper;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import java.io.*;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;

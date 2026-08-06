@@ -9,6 +9,7 @@
 
 package org.apache.turbine.app.xnat.modules.screens;
 
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.nrg.xdat.om.PipePipelinedetails;
@@ -29,7 +30,8 @@ public class XDATScreen_add_pipeline extends AdminEditScreenA {
 		
 	}
 	
-	public void doBuildTemplate(RunData data, Context context)      {
+	public void doBuildTemplate(PipelineData pipelineData, Context context)      {
+        final RunData data = pipelineData.getRunData();
 		try {
 			ArrayList<GenericWrapperElement> elements = GenericWrapperElement.GetAllElements(false);
 			ArrayList<GenericWrapperElement> myelements = new ArrayList<GenericWrapperElement>();

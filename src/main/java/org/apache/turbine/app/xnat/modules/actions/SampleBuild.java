@@ -10,6 +10,7 @@
 package org.apache.turbine.app.xnat.modules.actions;
 
 import org.apache.log4j.Logger;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.nrg.pipeline.PipelineLaunchParameters;
@@ -25,7 +26,8 @@ public class SampleBuild extends SecureAction
 {
     static org.apache.log4j.Logger logger = Logger.getLogger(SampleBuild.class);
 
-    public void doPerform(RunData data, Context context){
+    public void doPerform(PipelineData pipelineData, Context context){
+        final RunData data = pipelineData.getRunData();
         try {
             ItemI data_item = TurbineUtils.GetItemBySearch(data);
             XnatMrsessiondata mr = new XnatMrsessiondata(data_item);

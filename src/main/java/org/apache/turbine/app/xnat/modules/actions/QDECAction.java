@@ -22,6 +22,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.apache.xmlbeans.XmlOptions;
@@ -49,7 +50,8 @@ public class QDECAction extends ListingAction{
     //This method will invoke a QDEC Analysis
     //The user launches a search and the resultset of that search
     //is sent to the QDEC Analysis with the QDEC parameters selected by the user
-    public void doQdec(RunData data, Context context) throws Exception{
+    public void doQdec(PipelineData pipelineData, Context context) throws Exception{
+        final RunData data = pipelineData.getRunData();
 
         DisplaySearch search = TurbineUtils.getSearch(data);
         search.setPagingOn(false);

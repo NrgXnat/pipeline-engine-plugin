@@ -9,6 +9,7 @@
 
 package org.apache.turbine.app.xnat.modules.screens;
 
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.nrg.xnatx.pipeline.PipelineRepositoryManager;
@@ -28,7 +29,8 @@ public class PipelineScreen_add_project_pipeline extends SecureReport {
     	
     }
 
-    public void doBuildTemplate(RunData data, Context context) {
+    public void doBuildTemplate(PipelineData pipelineData, Context context) {
+        final RunData data = pipelineData.getRunData();
 	    logger.debug("BEGIN SECURE REPORT :" + this.getClass().getName());
 	    String projectId = ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("project",data));
 	    String pipelinePath = ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("pipeline_path",data));

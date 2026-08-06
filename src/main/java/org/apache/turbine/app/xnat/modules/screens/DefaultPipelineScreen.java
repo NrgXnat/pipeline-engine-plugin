@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.nrg.xnatx.pipeline.PipelineRepositoryManager;
@@ -128,7 +129,8 @@ public abstract class DefaultPipelineScreen extends SecureReport {
     public void preProcessing(RunData data, Context context) {
     }
 
-    public void doBuildTemplate(RunData data, Context context) {
+    public void doBuildTemplate(PipelineData pipelineData, Context context) {
+        final RunData data = pipelineData.getRunData();
         // preserveVariables(data,context);
         logger.debug("BEGIN SECURE REPORT :" + this.getClass().getName());
         preProcessing(data, context);

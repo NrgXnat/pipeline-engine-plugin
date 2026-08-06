@@ -10,6 +10,7 @@
 package org.apache.turbine.app.xnat.modules.screens;
 
 import org.apache.log4j.Logger;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.app.FieldMethodizer;
 import org.apache.velocity.context.Context;
@@ -87,9 +88,10 @@ public abstract class PipelineScreen extends SecureReport {
         context.put("skipToList",skipToList);
     }
     
-	public void doBuildTemplate(RunData data, Context context)
+	public void doBuildTemplate(PipelineData pipelineData, Context context)
 
 	{
+        final RunData data = pipelineData.getRunData();
 
         preserveVariables(data,context);
 
