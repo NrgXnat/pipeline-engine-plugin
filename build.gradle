@@ -9,8 +9,7 @@
 
 buildscript {
     ext {
-        vXnat = "1.10.1-SNAPSHOT"
-        vAxis = "1.4"
+        vXnat = "1.11.0-SNAPSHOT"   // jakarta / Tomcat 10 line
         vXmlBeans = "2.6.0"
         vPlexiViewer = "1.8.10"
         vCommonsHttpClient = "3.1"
@@ -37,7 +36,9 @@ def pipelineVersion = "1.8.10"
 def pipelineDependencyVersion = "1.0"
 
 repositories {
-    mavenLocal()
+    // Scope mavenLocal to org.nrg.* so a locally-published SNAPSHOT of core is consumed without shadowing
+    // partial third-party artifacts (e.g. ehcache-*-jakarta classifiers). See migration guide.
+    mavenLocal { content { includeGroupByRegex 'org\\.nrg.*' } }
     maven { url "https://nrgxnat.jfrog.io/nrgxnat/libs-release" }
     maven { url "https://nrgxnat.jfrog.io/nrgxnat/libs-snapshot" }
     mavenCentral()
@@ -56,7 +57,7 @@ configurations {
 }
 
 compileJava {
-    options.fork = false
+    options.fork = true   // a cross-JDK toolchain (21) must fork; also lets Lombok 1.18.34 run on JDK 21
 }
 
 
@@ -84,8 +85,8 @@ dependencies {
     implementation "org.nrg.xdat:core"
     implementation "org.nrg:prefs"
     implementation "org.nrg:framework"
-    implementation "io.springfox:springfox-swagger2"
-    implementation "io.springfox:springfox-swagger-ui"
+    // springfox is dead on Spring 6; source only uses io.swagger.annotations.* -> provide those directly.
+    compileOnly "io.swagger:swagger-annotations:1.5.20"
     implementAndInclude ("commons-httpclient:commons-httpclient:${vCommonsHttpClient}") {
         transitive = false
     }
@@ -98,24 +99,8 @@ dependencies {
     implementation "org.slf4j:jul-to-slf4j"
     implementation "log4j:log4j:1.2.17"
     implementation "net.sourceforge.saxon:saxon:9.1.0.8"
-    implementAndInclude ("axis:axis:${vAxis}") {
-        transitive = false
-    }
-    implementAndInclude ("axis:axis-ant:${vAxis}") {
-        transitive = false
-    }
-    implementAndInclude ("axis:axis-schema:1.3") {
-        transitive = false
-    }
-    implementAndInclude ("org.apache.axis:axis:${vAxis}") {
-        transitive = false
-    }
-    implementAndInclude ("org.apache.axis:axis-jaxrpc:${vAxis}") {
-        transitive = false
-    }
-    implementAndInclude ("org.apache.axis:axis-saaj:${vAxis}") {
-        transitive = false
-    }
+    // Legacy Apache Axis 1.4 SOAP subsystem removed (org.nrg.xdat.services.* / /axis/*.jws endpoints):
+    // Axis is javax-only and dead on Tomcat 10; those sources + endpoints are deleted in this migration.
 
     implementAndInclude ("org.nrg:pipelineBase:${pipelineDependencyVersion}") {
         transitive = false
@@ -154,10 +139,12 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api"
 
     // Compile-only deps that xnat-web no longer surfaces on consumer compileClasspath in monorepo 1.10.1+
-    compileOnly "javax.servlet:javax.servlet-api"
-    compileOnly "javax.mail:javax.mail-api"
+    // jakarta EE APIs used directly in source (javax.* -> jakarta.*): inject, mail (+ servlet for signatures).
+    compileOnly "jakarta.servlet:jakarta.servlet-api"
+    compileOnly "jakarta.inject:jakarta.inject-api:2.0.1"
+    compileOnly "jakarta.mail:jakarta.mail-api"
     compileOnly "org.restlet:org.restlet"
-    implementation("turbine:turbine") {
+    implementation("org.apache.turbine:turbine") {
         exclude group: "commons-dbcp"
         exclude group: "commons-email"
         exclude group: "commons-pool"
@@ -178,7 +165,7 @@ dependencies {
         exclude group: "velocity", module: "texen"
         exclude group: "jamon", module: "jamon"
     }
-    compileOnly("org.apache.velocity:velocity") { transitive = false }
+    compileOnly("org.apache.velocity:velocity-engine-core") { transitive = false }
 }
 
 // Pulls in the Jenkins BUILD_NUMBER environment variable if available.
@@ -251,8 +238,9 @@ jacocoTestReport {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    // toolchain (not sourceCompatibility) so compile runs on JDK 21 regardless of the daemon JDK —
+    // matches container-service/mfa and keeps Lombok 1.18.34's javac hooks working. See migration guide.
+    toolchain { languageVersion = JavaLanguageVersion.of(21) }
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

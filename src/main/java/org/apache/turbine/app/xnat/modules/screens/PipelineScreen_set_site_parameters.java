@@ -9,6 +9,7 @@
 
 package org.apache.turbine.app.xnat.modules.screens;
 
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.nrg.xnatx.pipeline.PipelineRepositoryManager;
@@ -40,7 +41,8 @@ public class PipelineScreen_set_site_parameters extends AdminEditScreenA{
 		
 	}
 	
-	public void doBuildTemplate(RunData data, Context context)      {
+	public void doBuildTemplate(PipelineData pipelineData, Context context)      {
+        final RunData data = pipelineData.getRunData();
 		try {
 			//A partially filled pipeline element
 			PipePipelinedetails pipelineDetails = (PipePipelinedetails)context.get("pipeline");

@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.nrg.pipeline.PipelineLaunchParameters;
@@ -38,15 +39,18 @@ import org.nrg.xnat.turbine.utils.ArcSpecManager;
 public class PipelineActions extends SecureAction{
     static org.apache.log4j.Logger logger = Logger.getLogger(PipelineActions.class);
 
-    public void doPerform(RunData data, Context context){
+    public void doPerform(PipelineData pipelineData, Context context){
+        final RunData data = pipelineData.getRunData();
         data.setScreenTemplate("PipelineScreen.vm");
     }
 
-    public void doSkip(RunData data, Context context) throws Exception {
+    public void doSkip(PipelineData pipelineData, Context context) throws Exception {
+        final RunData data = pipelineData.getRunData();
         data.setScreenTemplate("PipelineScreen.vm");
     }
 
-    public void doLaunch(RunData data, Context context)  throws Exception {
+    public void doLaunch(PipelineData pipelineData, Context context)  throws Exception {
+        final RunData data = pipelineData.getRunData();
         String project = ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("project",data));
         String step = ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("pipelineStep",data));
         boolean isDescendant = ((Boolean)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedBoolean("isdescendant",data));
@@ -133,7 +137,8 @@ public class PipelineActions extends SecureAction{
         return pipelineLaunchParameters;
     }
 
-    public void doBuild(RunData data, Context context) throws Exception{
+    public void doBuild(PipelineData pipelineData, Context context) throws Exception{
+        final RunData data = pipelineData.getRunData();
         String projectId = ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("projectId",data));
         int totalSessionsToBuild = ((Integer)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedInteger("param:control:total",data));
         String step = ((String)org.nrg.xdat.turbine.utils.TurbineUtils.GetPassedParameter("step",data));

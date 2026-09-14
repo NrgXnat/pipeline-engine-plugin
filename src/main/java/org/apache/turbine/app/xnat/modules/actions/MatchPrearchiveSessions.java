@@ -9,6 +9,7 @@
 
 package org.apache.turbine.app.xnat.modules.actions;
 
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.nrg.xdat.XDAT;
@@ -31,7 +32,8 @@ public class MatchPrearchiveSessions extends SecureAction {
      * @see org.apache.turbine.modules.actions.VelocitySecureAction#doPerform(org.apache.turbine.util.RunData, org.apache.velocity.context.Context)
      */
     @Override
-    public void doPerform(RunData data, Context context) throws Exception {
+    public void doPerform(PipelineData pipelineData, Context context) throws Exception {
+        final RunData data = pipelineData.getRunData();
         Integer num= TurbineUtils.GetPassedInteger("num_sessions", data);
         BatchTransfer bt = new BatchTransfer(TurbineUtils.GetFullServerPath(), TurbineUtils.GetSystemName(), XDAT.getSiteConfigPreferences().getAdminEmail());
         UserI user =TurbineUtils.getUser(data);

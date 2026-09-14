@@ -15,6 +15,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import org.apache.turbine.pipeline.PipelineData;
 import org.apache.turbine.util.RunData;
 import org.apache.velocity.context.Context;
 import org.nrg.xnatx.pipeline.PipelineRepositoryManager;
@@ -223,7 +224,8 @@ public class PipelineScreen_details extends XDATScreen_pdf {
 			return PipelineFileUtils.GetDocument(pathToPipelineXmlFile);
 		}
 
-	   public void doBuildTemplate(RunData data, Context context)	{
+	   public void doBuildTemplate(PipelineData pipelineData, Context context)	{
+        final RunData data = pipelineData.getRunData();
 	        try {
 	            item = TurbineUtils.GetItemBySearch(data);
 	        } catch (Exception e1) {}
