@@ -122,7 +122,11 @@
 <!-- if not a project owner, hide the tab added to the project page -->
 <script>
  console.log("Not found and removing");
-        jq(document).find('a[href=#Pipelines]').parents('li').hide();
+    $('ul.yui-nav li:has(a[href$="Pipelines"])').remove();
+    $(document).ready(function(){
+        // to avoid possible conflicts in tab initialization, wait until the DOM loads and then add 50 milliseconds before triggering the YUI tab view
+        window.setTimeout( function(){ window.summaryTabView.set('activeIndex',0) },50)
+    });
 </script>
 
 #end
